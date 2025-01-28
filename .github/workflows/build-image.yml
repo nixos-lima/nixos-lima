@@ -24,9 +24,10 @@ jobs:
       - name: Build Image
         run: |
           nix build .#packages.aarch64-linux.img
+          cp result/nixos.qcow2 nixos-lima-unstable-aarch64.qcow2
 
       - name: Upload image as artifact
         uses: actions/upload-artifact@v4
         with:
           name: nixos-lima-unstable-aarch64
-          path: result/nixos-lima-unstable-aarch64.qcow2
+          path: nixos-lima-unstable-aarch64.qcow2
