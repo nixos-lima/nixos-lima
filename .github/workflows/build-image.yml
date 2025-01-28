@@ -18,7 +18,7 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
           extra_nix_config: |
-            system-features = aarch64-linux
+            system-features = kvm aarch64-linux
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Image
