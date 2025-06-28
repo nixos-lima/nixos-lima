@@ -1,0 +1,98 @@
+= NixOS-Lima User Guide
+
+== Intro
+
+TBD
+
+== Updating NixOS
+
+From the `/etc/nixos` folder in your VM, you can run:
+
+[,console]
+----
+$ sudo nix flake update
+----
+
+This will download updates and update  your `flake.lock` file to match the current version of the `nixpkgs` branch that you are tracking in your `flake.nix`.  (Currently `nixos-unstable` is recommended because that's what we are developing and testing on.)
+
+After your `flake.lock` is updated you can use:
+
+[,console]
+----
+$ sudo nixos-rebuild switch
+----
+
+to rebuild your system and switch to it.
+
+== Manually Cleaning Out Old Versions
+
+You can list your saved generations with either:
+
+[,console]
+----
+$ nixos-rebuild list-generations
+----
+
+or
+
+[,console]
+----
+$ nix profile history --profile /nix/var/nix/profiles/system
+----
+
+You can clean out links to older generations of packages by using a command like:
+
+[,console]
+----
+$ sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than 30d
+----
+
+This example clears out all generations older than 30 days, but you should be careful to _not_ clean out at least your last known working version.
+
+Once old versions are unlinked, you can reclaim storage in your Nix Store, with:
+
+[,console]
+----
+ $ nix store gc
+----
+
+== Manually Cleaning Out Your Boot Partition
+
+The file in `/boot/kernels/` are not cleaned out by `nix store gc` and I've recently manually removed them by determining which versions are old/unused and removing them with `rm` like this:
+
+[,console]
+----
+$ sudo rm l4r393s77b53y2hay9qaj05dw485f87m-linux-6.13.1-Image
+$ sudo rm rdg8kzlixwh9ihb6kfq56vjb60h04bri-initrd-linux-6.13.1-initrd
+----
+
+There must be a better way—I will document it when I learn it.
+
+== Optimizing your Nix Store
+
+This command will scan the Nix store for duplicate files and deduplicate them with hard links.
+
+[,console]
+----
+$ nix store optimise
+----
+
+
+== Adding a GitHub Personal Access Token
+
+I'm not sure why I had to add this; perhaps it was because my GitHub repos for my system (`/etc/nixos`) and my Home Manager (`~/.config/home-manager`) are in private GitHub repositories. I added a `github-token.nix` module that looks like this:
+
+[,nix]
+----
+{ config, modulesPath, pkgs, lib, ... }:
+{
+  nix.settings = {
+    "access-tokens" = "github.com=github_pat_YOUR_TOKEN_GOES_HERE";
+  };
+}
+----
+
+and included it from `flake.nix`. This sets the `access-tokens` line in `/etc/nix/nix.conf`.
+
+
+
