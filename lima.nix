@@ -19,10 +19,13 @@
     };
 
     # system mounts
-    boot.loader.grub = {
-        device = "nodev";
-        efiSupport = true;
-        efiInstallAsRemovable = true;
+    boot = {
+        kernelParams = [ "console=tty0" ];
+        loader.grub = {
+            device = "nodev";
+            efiSupport = true;
+            efiInstallAsRemovable = true;
+        };
     };
     fileSystems."/boot" = {
         device = lib.mkForce "/dev/vda1";  # /dev/disk/by-label/ESP
