@@ -1,9 +1,9 @@
 arch: "aarch64"
 
 images:
-  - location: "./result/nixos.qcow2"
+  - location: "./result-aarch64/nixos.qcow2"
     arch: "aarch64"
-  - location: "./imgs/nixos-x86.qcow2"
+  - location: "./result-x86_64/nixos.qcow2"
     arch: "x86_64"
 
 cpus: 6

@@ -30,14 +30,14 @@ jobs:
       - name: Build aarch64 Image
         if: ${{ env.HOST_ARCH == 'aarch64' }}
         run: |
-          nix build .#packages.aarch64-linux.img
-          cp result/nixos.qcow2 nixos-lima-unstable-aarch64.qcow2
+          nix build .#packages.aarch64-linux.img --out-link result-${{ env.HOST_ARCH }}
+          ln -s result-${{ env.HOST_ARCH }}/nixos.qcow2 nixos-lima-unstable-${{ env.HOST_ARCH }}.qcow2
 
       - name: Build x86_64 Image
         if: ${{ env.HOST_ARCH == 'x86_64' }}
         run: |
-          nix build .#packages.x86_64-linux.img
-          cp result/nixos.qcow2 nixos-lima-unstable-x86_64.qcow2
+          nix build .#packages.x86_64-linux.img --out-link result-${{ env.HOST_ARCH }}
+          ln -s result-${{ env.HOST_ARCH }}/nixos.qcow2 nixos-lima-unstable-${{ env.HOST_ARCH }}.qcow2
 
       - name: Upload aarch64 image as artifact
         uses: actions/upload-artifact@v4
