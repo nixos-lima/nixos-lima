@@ -19,8 +19,6 @@ mounts:
   9p:
     cache: "mmap"
 
-mountType: "9p"
-
 ssh:
   # This allows access to GitHub, etc.
   forwardAgent: true
