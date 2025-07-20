@@ -32,14 +32,14 @@ Flakes must be enabled.
 ## Generating the image
 
 ```bash
-nix build .#packages.aarch64-linux.img
+nix build .#packages.aarch64-linux.img --out-link result-aarch64
 ```
 
 If you built the image on another system:
 
 ```bash
-mkdir result
-# copy image to result/nixos.img
+mkdir result-aarch64
+# copy image to result-aarch64/nixos.img
 ```
 
 ## Running NixOS
