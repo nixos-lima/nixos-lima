@@ -159,7 +159,7 @@ in {
         };
 
         networking.nat.enable = true;
-    
+
         environment.systemPackages = with pkgs; [
             bash
             sshfs
