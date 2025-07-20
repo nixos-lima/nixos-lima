@@ -45,7 +45,7 @@ mkdir result
 ## Running NixOS
 
 ```bash
-limactl start --name=nixos nixos.yaml
+limactl start --vm-type qemu --name=nixos nixos.yaml
 
 limactl shell nixos
 ```
