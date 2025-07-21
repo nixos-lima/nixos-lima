@@ -143,7 +143,9 @@ in {
             requires = [ "lima-init.service" ];
             serviceConfig = {
                 Type = "simple";
-                ExecStart = "${LIMA_CIDATA_MNT}/lima-guestagent daemon";
+                ExecStart = ''
+                    /bin/sh -c '. ${LIMA_CIDATA_MNT}/lima.env && exec ${LIMA_CIDATA_MNT}/lima-guestagent daemon --vsock-port "$LIMA_CIDATA_VSOCK_PORT"'
+                '';
                 Restart = "on-failure";
             };
         };
