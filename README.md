@@ -18,7 +18,19 @@ The following are the design goals that I think are important, but I'm definitel
 4. Keep the base image and Nix services module as generic and reusable by others as possible
 5. Track `nixpkgs/nixos-unstable` and switch to `nixpkgs/nixos-25.11` when it is branched off.
 
-## Prerequisites
+## Quickstart
+
+1. Install Lima (You do not need a Nix installation on your host machine)
+2. Run the following command to start a NixOS guest.
+
+```shell
+limactl start https://raw.githubusercontent.com/nixos-lima/nixos-lima-config-sample/refs/heads/master/nixos.yaml
+```
+    
+3. See [NixOS Lima VM Config Sample](https://github.com/nixos-lima/nixos-lima-config-sample) for how to maintain the NixOS system configuration (and optionally Home Manager) in your NixOS VM.
+
+
+## Build Prerequisites
 
 A working Nix installation capable of building Linux systems. This includes:
 
