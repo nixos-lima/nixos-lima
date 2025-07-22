@@ -1,6 +1,6 @@
 # Run NixOS on a Lima VM
 
-A NixOS flake that generates a [Lima](https://lima-vm.io)-compatible system image and provides a NixOS module that runs in a Lima guest VM and configures the machine at boot-time using Lima configuration "userdata" and runs the `lima-guestagent` daemon as a `systemd` service. 
+A NixOS flake that generates a [Lima](https://lima-vm.io)-compatible system image and provides a NixOS module for Lima boot-time and run-time support. The NixOS module runs in a Lima guest VM and configures the machine at boot-time using Lima configuration "userdata" and runs the `lima-guestagent` daemon as a `systemd` service. 
          
 Most users will want to fork the [NixOS Lima VM Config Sample](https://github.com/nixos-lima/nixos-lima-config-sample) or copy its approach. This will allow you to customize your system configuration while benefitting from bug fixes and other updates to this flake.
 
