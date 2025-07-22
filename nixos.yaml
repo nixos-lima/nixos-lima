@@ -19,10 +19,6 @@ mounts:
   9p:
     cache: "mmap"
 
-ssh:
-  # This allows access to GitHub, etc.
-  forwardAgent: true
-
 containerd:
   system: false
   user: false
