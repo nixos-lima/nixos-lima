@@ -141,11 +141,13 @@ in {
             wantedBy = [ "multi-user.target" ];
             after = [ "network.target" "lima-init.service" ];
             requires = [ "lima-init.service" ];
+            script = ''
+                # We can't just source lima.env because values might have spaces in them
+                while read -r line; do export "$line"; done < "${LIMA_CIDATA_MNT}"/lima.env
+                ${LIMA_CIDATA_MNT}/lima-guestagent daemon --vsock-port "$LIMA_CIDATA_VSOCK_PORT"
+            '';
             serviceConfig = {
                 Type = "simple";
-                ExecStart = ''
-                    /bin/sh -c '. ${LIMA_CIDATA_MNT}/lima.env && exec ${LIMA_CIDATA_MNT}/lima-guestagent daemon --vsock-port "$LIMA_CIDATA_VSOCK_PORT"'
-                '';
                 Restart = "on-failure";
             };
         };
