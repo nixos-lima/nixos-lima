@@ -16,6 +16,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install qemu-utils
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-utils
+
       - name: Install Nix
         uses: cachix/install-nix-action@v30
         env:
@@ -31,13 +36,15 @@ jobs:
         if: ${{ env.HOST_ARCH == 'aarch64' }}
         run: |
           nix build .#packages.aarch64-linux.img --out-link result-${{ env.HOST_ARCH }}
-          ln -s result-${{ env.HOST_ARCH }}/nixos.qcow2 nixos-lima-unstable-${{ env.HOST_ARCH }}.qcow2
+          # copy and compress the image (and give it a new name)
+          qemu-img convert -O qcow2 -c result-${{ env.HOST_ARCH }}/nixos.qcow2 nixos-lima-unstable-${{ env.HOST_ARCH }}.qcow2
 
       - name: Build x86_64 Image
         if: ${{ env.HOST_ARCH == 'x86_64' }}
         run: |
           nix build .#packages.x86_64-linux.img --out-link result-${{ env.HOST_ARCH }}
-          ln -s result-${{ env.HOST_ARCH }}/nixos.qcow2 nixos-lima-unstable-${{ env.HOST_ARCH }}.qcow2
+          # copy and compress the image (and give it a new name)
+          qemu-img convert -O qcow2 -c result-${{ env.HOST_ARCH }}/nixos.qcow2 nixos-lima-unstable-${{ env.HOST_ARCH }}.qcow2
 
       - name: Upload aarch64 image as artifact
         uses: actions/upload-artifact@v4
