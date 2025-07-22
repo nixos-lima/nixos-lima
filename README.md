@@ -1,22 +1,22 @@
 # Run NixOS on a Lima VM
 
-A NixOS flake for building a [Lima](https://lima-vm.io)-compatible system image.
+A NixOS flake that generates a [Lima](https://lima-vm.io)-compatible system image and provides a NixOS module that runs in a Lima guest VM and configures the machine at boot-time using Lima configuration "userdata" and runs the `lima-guestagent` daemon as a `systemd` service. 
+         
+Most users will want to fork the [NixOS Lima VM Config Sample](https://github.com/nixos-lima/nixos-lima-config-sample) or copy its approach. This will allow you to customize your system configuration while benefitting from bug fixes and other updates to this flake.
 
-This is a based on [kasuboski/nixos-lima](https://github.com/kasuboski/nixos-lima) and there are about a half-dozen [forks](https://github.com/kasuboski/nixos-lima/forks) of that repo, but none of them (yet) seem to be making much of an effort to be generic/reusable, accept contributions, create documentation, etc. So I created this repo to try to create something that multiple developers can use and contribute to. (So now there are a _half-dozen plus one_ projects 🤣  -- see [xkcd "Standards"](https://xkcd.com/927/))
+You can separately fork/clone this repository if you want to make improvements to the generated starter image or to the `lima-init` or `lima-guestagent` services, but you should avoid making local customizations to your clone of this repository. This also makes it easier to submit _Pull Requests_ if you are so inclined. 
 
-There has been ongoing discussion in https://github.com/lima-vm/lima/discussions/430, and I have proposed there to create a "unified" project. If you have input or want to collaborate, please comment there or open an issue or pull request here. I'm also happy to archive this project and contribute to another one if other collaborators think that is a better path forward.
-
-Currently, this flake supports building and booting a Lima NixOS image on both Linux and macOS and rebuilding NixOS from inside the VM. (I have not tested on x86, but it should work with minor tweaks.) Several of the existing forks contain features I would like to see integrated.
+Currently, this flake supports building and booting a Lima NixOS image on both Linux and macOS and rebuilding NixOS from inside the VM.
 
 ## Design Goals
 
 The following are the design goals that I think are important, but I'm definitely open to suggestions for changing these. (Just open an issue.)
 
 1. Nix flake that can build a bootable NixOS Lima-compatible image
-2. Be as generic and reusable by others as possible
-3. Nix modules for the systemd services that initialize and configure the system
-4. User customization of NixOS Lima instance is done separately from initial image creation
-5. Track the current nixos-unstable branch in Nix
+2. Nix modules for the systemd services that initialize and configure the system
+3. User customization of NixOS Lima instance is done separately from initial image creation
+4. Keep the base image and Nix services module as generic and reusable by others as possible
+5. Track `nixpkgs/nixos-unstable` and switch to `nixpkgs/nixos-25.11` when it is branched off.
 
 ## Prerequisites
 
@@ -68,6 +68,12 @@ nixos-rebuild switch --flake .#sample --use-remote-sudo
 ```
 
 Or change the name `sample` to match the hostname of your NixOS Lima guest.
+
+## History
+
+This is a based on [kasuboski/nixos-lima](https://github.com/kasuboski/nixos-lima) and there are about a half-dozen [forks](https://github.com/kasuboski/nixos-lima/forks) of that repo, but none of them (yet) seem to be making much of an effort to be generic/reusable, accept contributions, create documentation, etc. So I created this repo to try to create something that multiple developers can use and contribute to. (So now there are a _half-dozen plus one_ projects 🤣  -- see [xkcd "Standards"](https://xkcd.com/927/))
+
+There has been ongoing discussion in https://github.com/lima-vm/lima/discussions/430, and I have proposed there to create a "unified" project. If you have input or want to collaborate, please comment there or open an issue or pull request here. I'm also happy to archive this project and contribute to another one if other collaborators think that is a better path forward.
 
 ## References
 
