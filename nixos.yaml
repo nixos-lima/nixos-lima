@@ -1,5 +1,3 @@
-arch: "aarch64"
-
 images:
   - location: "./result-aarch64/nixos.qcow2"
     arch: "aarch64"
