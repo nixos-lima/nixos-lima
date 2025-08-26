@@ -8,7 +8,7 @@ cpus: 6
 
 mounts:
 - location: "~"
-  writable: true
+  writable: false
   9p:
     # Try choosing "mmap" or "none" if you see a stability issue with the default "fscache".
     cache: "mmap"
