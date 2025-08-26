@@ -1,0 +1,58 @@
+= Publishing images from GitHub Actions to a GitHub Release
+
+This can be further automated, but this is the procedure used for the v0.0.2 release.
+
+. Prepare for release
++
+* Merge changes to master branch, etc.
+* Do a `nix flake update` so image is built with latest version of Nixpkgs
+. Make a tag
++
+[source]
+----
+export VERSION=v0.0.2
+git tag --sign $VERSION -m "Release <version>"
+git push --tags
+----
+
+. Download the artifacts for this tag:
++
+[source]
+----
+ ./scripts/download-tagged-artifacts.sh $VERSION
+----
+
+. Make a release
++
+[source]
+----
+make-release.sh $VERSION
+----
+
+. Upload release
++
+[source]
+----
+./upload-release.sh $VERSION
+----
+
+. Download release artifacts and get their SHA-512 hashes
++
+[source]
+----
+./download-release.sh $VERSION
+shasum -a 512 *.qcow2
+----
+
+. Get Release URLs
++
+[source]
+----
+gh api repos/nixos-lima/nixos-lima/releases/tags/$VERSION --jq '.assets[] | {name, url: .browser_download_url, digest}'
+----
++
+. Update the Lima YAML template in nixos-lima/nixos-lima-config-sample
+
+Use the Release URLs from the "Get Release URLs" and the SHA-512s to update `nixos.yaml` in `nixos-lima/nixos-lima-config-sample`
+
+

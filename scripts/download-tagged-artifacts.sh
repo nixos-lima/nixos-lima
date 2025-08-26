@@ -4,7 +4,7 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 NIXOS_LIMA_TAG=$1
-JOBID=`gh run list --branch v0.0.1 --limit 1 --json databaseId | jq '.[0].databaseId'`
+JOBID=`gh run list --branch $NIXOS_LIMA_TAG --limit 1 --json databaseId | jq '.[0].databaseId'`
 IMAGEDIR=release-$NIXOS_LIMA_TAG-images
 mkdir -p $IMAGEDIR
 echo Downloading nixos-lima-unstable-aarch64...
