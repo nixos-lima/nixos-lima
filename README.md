@@ -24,7 +24,7 @@ The following are the design goals that I think are important, but I'm definitel
 2. Run the following command to start a NixOS guest.
 
 ```shell
-limactl start https://raw.githubusercontent.com/nixos-lima/nixos-lima-config-sample/refs/heads/master/nixos.yaml
+limactl start --yes https://raw.githubusercontent.com/nixos-lima/nixos-lima-config-sample/refs/heads/master/nixos.yaml
 ```
     
 3. See [NixOS Lima VM Config Sample](https://github.com/nixos-lima/nixos-lima-config-sample) for how to maintain the NixOS system configuration (and optionally Home Manager) in your NixOS VM.
