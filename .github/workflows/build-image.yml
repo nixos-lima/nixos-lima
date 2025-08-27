@@ -54,7 +54,7 @@ jobs:
       fail-fast: false
     env:
       HOST_ARCH: ${{ matrix.os == 'ubuntu-24.04' && 'x86_64' || (matrix.os == 'ubuntu-24.04-arm' && 'aarch64') || 'unknown' }}
-      LIMA_VERSION: "v1.0.7"
+      LIMA_VERSION: "v1.1.1"
       GUEST_HOST_NAME: "nixos"
       GUEST_USER: "lima"
     steps:
@@ -86,7 +86,7 @@ jobs:
         id: lima-actions-setup
         with:
           version: ${{ env.LIMA_VERSION }}
-          additional_guestagents: ${{ matrix.os == 'ubuntu-24.04' && 'false' || (matrix.os == 'ubuntu-24.04-arm' && 'true') || 'false' }}
+          additional_guestagents: ${{ matrix.os == 'ubuntu-24.04' && matrix.guest-arch == 'aarch64' && 'true' || (matrix.os == 'ubuntu-24.04-arm' && 'true') || 'false' }}
 
       - name: "Cache ~/.cache/lima"
         uses: actions/cache@v4
