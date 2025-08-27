@@ -32,30 +32,14 @@ jobs:
             system-features = ${{ env.SYSTEM_FEATURES }}
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build aarch64 Image
-        if: ${{ env.HOST_ARCH == 'aarch64' }}
+      - name: Build ${{ env.HOST_ARCH }} Image
         run: |
-          nix build .#packages.aarch64-linux.img --out-link result-${{ env.HOST_ARCH }}
+          nix build .#packages.${{ env.HOST_ARCH }}-linux.img --out-link result-${{ env.HOST_ARCH }}
           # copy and compress the image (and give it a new name)
           qemu-img convert -O qcow2 -c result-${{ env.HOST_ARCH }}/nixos.qcow2 nixos-lima-unstable-${{ env.HOST_ARCH }}.qcow2
 
-      - name: Build x86_64 Image
-        if: ${{ env.HOST_ARCH == 'x86_64' }}
-        run: |
-          nix build .#packages.x86_64-linux.img --out-link result-${{ env.HOST_ARCH }}
-          # copy and compress the image (and give it a new name)
-          qemu-img convert -O qcow2 -c result-${{ env.HOST_ARCH }}/nixos.qcow2 nixos-lima-unstable-${{ env.HOST_ARCH }}.qcow2
-
-      - name: Upload aarch64 image as artifact
+      - name: Upload ${{ env.HOST_ARCH }} image as artifact
         uses: actions/upload-artifact@v4
-        if: ${{ env.HOST_ARCH == 'aarch64' }}
         with:
-          name: nixos-lima-unstable-aarch64
-          path: nixos-lima-unstable-aarch64.qcow2
-
-      - name: Upload x86_64 image as artifact
-        uses: actions/upload-artifact@v4
-        if: ${{ env.HOST_ARCH == 'x86_64' }}
-        with:
-          name: nixos-lima-unstable-x86_64
-          path: nixos-lima-unstable-x86_64.qcow2
+          name: nixos-lima-unstable-${{ env.HOST_ARCH }}
+          path: nixos-lima-unstable-${{ env.HOST_ARCH }}.qcow2
