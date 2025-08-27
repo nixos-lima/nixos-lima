@@ -69,7 +69,7 @@ the current directory, we can run a `nixos-rebuild` inside the VM that reference
 directory on the host. The following command can be set to rebuild NixOS from the local `flake.nix`:
 
 ```bash
-limactl shell nixos -- nixos-rebuild boot --flake .#nixos --sudo
+limactl shell nixos -- nixos-rebuild boot --flake .#nixos-aarch64 --sudo
 limactl restart nixos
 ```
   
