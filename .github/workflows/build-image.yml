@@ -120,5 +120,4 @@ jobs:
           set -eux
           limactl shell nixos -- nixos-rebuild boot --flake .#nixos-${{ matrix.guest-arch }} --sudo
           sleep 1
-          limactl stop nixos
-          limactl start nixos
+          limactl restart nixos
