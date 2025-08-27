@@ -7,12 +7,11 @@
 
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+    # Read Lima configuration at boot time and run the Lima guest agent
     services.lima.enable = true;
 
     # ssh
     services.openssh.enable = true;
-    services.openssh.settings.PermitRootLogin = "yes";
-    users.users.root.password = "nixos";
 
     security = {
         sudo.wheelNeedsPassword = false;
@@ -47,6 +46,6 @@
         git
     ];
 
-    system.stateVersion = "25.05";
+    system.stateVersion = "25.11";
 }
 
