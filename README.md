@@ -57,16 +57,20 @@ mkdir result-aarch64
 ## Running NixOS
 
 ```bash
-limactl start --vm-type qemu --name=nixos nixos.yaml
+limactl start --yes nixos.yaml
 
 limactl shell nixos
 ```
 
 ## Rebuilding NixOS inside the Lima instance
 
+Since our `nixos.yaml` file read-only mounts the project directory and `limactl shell` by default preserves
+the current directory, we can run a `nixos-rebuild` inside the VM that references `flake.nix` in the project
+directory on the host. The following command can be set to rebuild NixOS from the local `flake.nix`:
+
 ```bash
-# Using a VM shell, cd to this repository directory
-nixos-rebuild switch --flake .#nixos --use-remote-sudo
+limactl shell nixos -- nixos-rebuild boot --flake .#nixos --sudo
+limactl restart nixos
 ```
   
 ## Managing your NiXOS Lima VM instance
@@ -76,14 +80,14 @@ See the [NixOS Lima VM Config Sample](https://github.com/nixos-lima/nixos-lima-c
 Fork and clone that repository, check it out either to your macOS host or to a directory within your NixOS VM instance. Then use:
 
 ```bash
-nixos-rebuild switch --flake .#sample --use-remote-sudo
+nixos-rebuild switch --flake .#sample --sudo
 ```
 
 Or change the name `sample` to match the hostname of your NixOS Lima guest.
 
 ## History
 
-This is a based on [kasuboski/nixos-lima](https://github.com/kasuboski/nixos-lima) and there are about a half-dozen [forks](https://github.com/kasuboski/nixos-lima/forks) of that repo, but none of them (yet) seem to be making much of an effort to be generic/reusable, accept contributions, create documentation, etc. So I created this repo to try to create something that multiple developers can use and contribute to. (So now there are a _half-dozen plus one_ projects 🤣  -- see [xkcd "Standards"](https://xkcd.com/927/))
+This is based on [kasuboski/nixos-lima](https://github.com/kasuboski/nixos-lima) and there are about a half-dozen [forks](https://github.com/kasuboski/nixos-lima/forks) of that repo, but none of them (yet) seem to be making much of an effort to be generic/reusable, accept contributions, create documentation, etc. So I created this repo to try to create something that multiple developers can use and contribute to. (So now there are a _half-dozen plus one_ projects 🤣  -- see [xkcd "Standards"](https://xkcd.com/927/))
 
 There has been ongoing discussion in https://github.com/lima-vm/lima/discussions/430, and I have proposed there to create a "unified" project. If you have input or want to collaborate, please comment there or open an issue or pull request here. I'm also happy to archive this project and contribute to another one if other collaborators think that is a better path forward.
 

@@ -43,3 +43,82 @@ jobs:
         with:
           name: nixos-lima-unstable-${{ env.HOST_ARCH }}
           path: nixos-lima-unstable-${{ env.HOST_ARCH }}.qcow2
+
+  test-image:
+    runs-on: ${{ matrix.os }}
+    needs: build
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, macos-15]
+        guest-arch: ['aarch64', 'x86_64']
+        exclude:
+          - os: 'ubuntu-24.04'      # Dumps core with Lima > 1.0.7
+            guest-arch: 'aarch64'
+          - os: 'macos-15'          # Does not support VZ or (hw accelerated) QEMU
+            guest-arch: 'aarch64'
+          - os: 'macos-15'          # Not tested, but would require emulation
+            guest-arch: 'x86_64'
+      fail-fast: false
+    env:
+      HOST_ARCH: ${{ matrix.os == 'ubuntu-24.04' && 'x86_64' || matrix.os == 'ubuntu-24.04-arm' && 'aarch64' || matrix.os == 'macos-15' && 'aarch64' || 'unknown' }}
+      LIMA_VERSION: "v1.2.1"
+      GUEST_HOST_NAME: "nixos"
+      GUEST_USER: "lima"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download ${{ matrix.guest-arch }} image artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: nixos-lima-unstable-${{ matrix.guest-arch }}
+          path: artifacts/
+      - name: move and rename
+        run: |
+          mkdir -p result-${{ matrix.guest-arch }}
+          mv artifacts/nixos-lima-unstable-${{ matrix.guest-arch }}.qcow2 result-${{ matrix.guest-arch }}/nixos.qcow2
+
+      - name: "Install QEMU"
+        if: ${{ matrix.os == 'ubuntu-24.04' || matrix.os == 'ubuntu-24.04-arm' }}
+        run: |
+          set -eux
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ovmf qemu-system-x86 qemu-system-aarch64 qemu-efi-aarch64 qemu-utils
+          sudo modprobe kvm
+          # `sudo usermod -aG kvm $(whoami)` does not take an effect on GHA
+          if [ "${{ matrix.os }}" == "ubuntu-24.04" ]; then
+            sudo chown $(whoami) /dev/kvm
+          fi
+
+      - name: "Set up Lima (Linux)"
+        if: ${{ matrix.os == 'ubuntu-24.04' || matrix.os == 'ubuntu-24.04-arm' }}
+        uses: lima-vm/lima-actions/setup@v1
+        id: lima-actions-setup
+        with:
+          version: ${{ env.LIMA_VERSION }}
+          additional_guestagents: ${{ matrix.os == 'ubuntu-24.04' && 'false' || (matrix.os == 'ubuntu-24.04-arm' && 'true') || 'false' }}
+
+      - name: "Set up Lima (macOS)"
+        if: ${{ matrix.os == 'macos-15' }}
+        run: brew install lima
+
+      - name: "Cache ~/.cache/lima"
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/lima
+          key: os-${{ matrix.os }}-NixOS-Lima-${{ steps.lima-actions-setup.outputs.version }}-guest-${{ matrix.guest-arch }}
+
+      - name: "Start an instance of NixOS"
+        env:
+          # Use env variable QEMU_SYSTEM_AARCH64 to override Lima's QEMU configuration on aarch64 host
+          QEMU_SYSTEM_AARCH64: ${{ env.HOST_ARCH == 'aarch64' && 'qemu-system-aarch64 -machine virt -cpu max' || 'qemu-system-aarch64' }}
+        run: |
+          set -eux
+          limactl start --arch ${{ matrix.guest-arch }} --name=${{ env.GUEST_HOST_NAME }} --network=lima:user-v2 --set '.user.name = "${{ env.GUEST_USER }}"' nixos.yaml
+
+      - name: "Update and Rebuild NixOS"
+        run: |
+          set -eux
+          limactl shell nixos -- nixos-rebuild boot --flake .#nixos-${{ matrix.guest-arch }} --sudo
+          sleep 1
+          limactl stop nixos
+          limactl start nixos

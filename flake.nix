@@ -26,9 +26,16 @@
             format = "qcow-efi";
           };
         };
-      }) // { 
-        nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-          system = "aarch64-linux"; # doesn't play nice with each system :shrug:
+      }) // {
+        nixosConfigurations.nixos-aarch64 = nixpkgs.lib.nixosSystem {
+          system = "aarch64-linux";
+          specialArgs = attrs;
+          modules = [
+            ./lima.nix
+          ];
+        };
+        nixosConfigurations.nixos-x86_64 = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
           specialArgs = attrs;
           modules = [
             ./lima.nix
