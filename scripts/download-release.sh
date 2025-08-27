@@ -4,5 +4,6 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 NIXOS_LIMA_TAG=$1
-gh release download $NIXOS_LIMA_TAG --repo nixos-lima/nixos-lima --pattern "*.qcow2"
+mkdir -p tmp
+gh release download --repo nixos-lima/nixos-lima -D tmp --pattern "*.qcow2" $NIXOS_LIMA_TAG
 
