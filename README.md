@@ -107,18 +107,6 @@ directory on the host. The following command can be used on the host to rebuild 
 limactl shell nixos -- nixos-rebuild boot --flake .#nixos-aarch64 --sudo
 limactl restart nixos
 ```
-  
-## Managing your NiXOS Lima VM instance
-
-See the [NixOS Lima VM Config Sample](https://github.com/nixos-lima/nixos-lima-config-sample).
-
-Fork and clone that repository, check it out either to your macOS host or to a directory within your NixOS VM instance. Then use:
-
-```bash
-nixos-rebuild switch --flake .#sample --sudo
-```
-
-Or change the name `sample` to match the hostname of your NixOS Lima guest.
 
 ## History
 
