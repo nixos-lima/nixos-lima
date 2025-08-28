@@ -7,6 +7,10 @@
 
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+    # Give users in the `wheel` group additional rights when connecting to the Nix daemon
+    # This simplifies remote deployment to the instance's nix store.
+    nix.settings.trusted-users = [ "@wheel" ];
+
     # Read Lima configuration at boot time and run the Lima guest agent
     services.lima.enable = true;
 
