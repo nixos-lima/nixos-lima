@@ -110,12 +110,12 @@ limactl restart nixos
 
 ## History
 
-This is based on [kasuboski/nixos-lima](https://github.com/kasuboski/nixos-lima) and there are about a half-dozen [forks](https://github.com/kasuboski/nixos-lima/forks) of that repo, but none of them (yet) seem to be making much of an effort to be generic/reusable, accept contributions, create documentation, etc. So I created this repo to try to create something that multiple developers can use and contribute to. (So now there are a _half-dozen plus one_ projects 🤣  -- see [xkcd "Standards"](https://xkcd.com/927/))
-
-There has been ongoing discussion in https://github.com/lima-vm/lima/discussions/430, and I have proposed there to create a "unified" project. If you have input or want to collaborate, please comment there or open an issue or pull request here. I'm also happy to archive this project and contribute to another one if other collaborators think that is a better path forward.
+This is based on [kasuboski/nixos-lima](https://github.com/kasuboski/nixos-lima) and there were about a half-dozen [forks](https://github.com/kasuboski/nixos-lima/forks) of that repo, but none of them seemed to be making an effort to be generic/reusable, accept contributions, create documentation, etc. So I created this repo to try to create something that multiple developers can use and contribute to. (So now there are a _half-dozen plus one_ projects 🤣  -- see [xkcd "Standards"](https://xkcd.com/927/))
 
 ## References
 
+* Lima discussion topic: [NixOS guest? #430](https://github.com/lima-vm/lima/discussions/430)
+* Lima issue: [Template for nixOS #3688](https://github.com/lima-vm/lima/issues/3688)
 * [NixOS Dev Environment on Mac](https://www.joshkasuboski.com/posts/nix-dev-environment/) January, 24 2023 by [Josh Kasuboski](https://www.joshkasuboski.com)
 
 ## Credits
