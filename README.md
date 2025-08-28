@@ -1,12 +1,8 @@
 # Run NixOS on a Lima VM
 
-A NixOS flake that generates a [Lima](https://lima-vm.io)-compatible system image and provides a NixOS module for Lima boot-time and run-time support. The NixOS module runs in a Lima guest VM and configures the machine at boot-time using Lima configuration "userdata" and runs the `lima-guestagent` daemon as a `systemd` service. 
-         
-Most users will want to fork the [NixOS Lima VM Config Sample](https://github.com/nixos-lima/nixos-lima-config-sample) or copy its approach. This will allow you to customize your system configuration while benefitting from bug fixes and other updates to this flake.
+Run NixOS guest VMs using [Lima](https://lima-vm.io). **nixos-lima** is a Nix flake that generates Lima-compatible system images and provides a NixOS module for Lima boot-time and runtime support. The NixOS module runs in a Lima guest VM and configures the machine at boot-time using Lima configuration _userdata_ and runs the `lima-guestagent` daemon as a `systemd` service.
 
-You can separately fork/clone this repository if you want to make improvements to the generated starter image or to the `lima-init` or `lima-guestagent` services, but you should avoid making local customizations to your clone of this repository. This also makes it easier to submit _Pull Requests_ if you are so inclined. 
-
-Currently, this flake supports building and booting a Lima NixOS image on both Linux and macOS and rebuilding NixOS from inside the VM.
+By using the released system image and using the provided NixOS module, you can create your own custom configuration.
 
 ## Design Goals
 
@@ -20,28 +16,65 @@ The following are the design goals that I think are important, but I'm definitel
 
 ## Quickstart
 
-1. Install Lima (You do not need a Nix installation on your host machine)
-2. Run the following command to start a NixOS guest.
+If you want to quickly start a NixOS guest using Lima, you can use the [nixos.yaml](https://github.com/nixos-lima/nixos-lima/blob/master/nixos.yaml) template via `https://`. You do not need a Nix installation on your host machine, only a Lima installation. 
 
-```shell
-limactl start --yes https://raw.githubusercontent.com/nixos-lima/nixos-lima-config-sample/refs/heads/master/nixos.yaml
+1. Install Lima
+2. Run the following command to start a NixOS guest with the latest released nixos-lima system image:
+
+```bash
+limactl start --yes https://raw.githubusercontent.com/nixos-lima/nixos-lima/master/nixos.yaml
 ```
     
-3. See [NixOS Lima VM Config Sample](https://github.com/nixos-lima/nixos-lima-config-sample) for how to maintain the NixOS system configuration (and optionally Home Manager) in your NixOS VM.
+3. See [NixOS Lima VM Config Sample](https://github.com/nixos-lima/nixos-lima-config-sample) for an example of how to maintain the NixOS system configuration (and optionally Home Manager) in your NixOS guest VM.
 
+## Using the nixos-lima Module in Your Own Configuration
 
-## Build Prerequisites
+In your `flake.nx`, include `nixos-lima` as a flake input:
+
+```
+  inputs = {
+    ...
+    nixos-lima.url = "github:nixos-lima/nixos-lima/"
+    ...
+  };
+```
+
+In your system configuration, include:
+
+```
+  services.lima.enable = true;
+```
+
+For a complete, working example see: [nixos-lima/nixos-lima-config-sample](https://github.com/nixos-lima/nixos-lima-config-sample)
+
+## Using nixos-rebuild To Customize and Update Your Guest Instance
+
+There are at least three ways of managing the NixOS configuration of your image:
+
+1. From inside the instance use `git` to check out a configuration repository and use `nixos-rebuild`.
+2. From inside the instance, use `nixos-rebuild` on a configuration directory mounted from the host.
+3. Push a configuration to the instance using the `--target` option of `nixos-rebuild` or using a remote deploy tool like [deploy-rs](https://github.com/serokell/deploy-rs).
+
+For an example of (1) see [nixos-lima/nixos-lima-config-sample](https://github.com/nixos-lima/nixos-lima-config-sample).
+
+## Building and Testing the System Image
+
+If you want to build your own `nixos-lima` or contribute to this project, you can check out this repository and build the system image locally.
+
+### Prerequisites
 
 A working Nix installation capable of building Linux systems. This includes:
 
 * Linux system with Nix installed
 * Linux VM with Nix installed (e.g. under macOS)
 * macOS system with [linux-builder](https://nixos.org/manual/nixpkgs/unstable/#sec-darwin-builder) installed via [Nix Darwin](https://github.com/LnL7/nix-darwin)
+* macOS system with [nix-rosetta-builder](https://github.com/cpick/nix-rosetta-builder)
 
 Flakes must be enabled.
 
-
-## Generating the image
+### Generating the image
+  
+This example is for `aarch64`, but you can replace `aarch64` with `x86_64` if you are on an x86_64 Linux or macOS system.
 
 ```bash
 nix build .#packages.aarch64-linux.img --out-link result-aarch64
@@ -51,22 +84,24 @@ If you built the image on another system:
 
 ```bash
 mkdir result-aarch64
-# copy image to result-aarch64/nixos.img
+# copy image to result-aarch64/nixos.qcow2
 ```
 
-## Running NixOS
+### Running NixOS
+
+Once you've built or copied an image into the `result-aarch64` directory, the `nixos-result.yml` template locates the images via a relative filesystem path:
 
 ```bash
-limactl start --yes nixos.yaml
+limactl start --yes --name=nixos nixos-result.yaml
 
 limactl shell nixos
 ```
 
-## Rebuilding NixOS inside the Lima instance
+### Rebuilding NixOS inside the Lima instance
 
-Since our `nixos.yaml` file read-only mounts the project directory and `limactl shell` by default preserves
-the current directory, we can run a `nixos-rebuild` inside the VM that references `flake.nix` in the project
-directory on the host. The following command can be set to rebuild NixOS from the local `flake.nix`:
+If your Lima YAML file mounts your home directory (since `limactl shell` by default preserves
+the current directory) you can invoke `nixos-rebuild` inside the VM using a `flake.nix` in a
+directory on the host. The following command can be used on the host to rebuild NixOS in the guest from the `flake.nix` in the current directory:
 
 ```bash
 limactl shell nixos -- nixos-rebuild boot --flake .#nixos-aarch64 --sudo
