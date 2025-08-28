@@ -4,8 +4,6 @@ images:
   - location: "./result-x86_64/nixos.qcow2"
     arch: "x86_64"
 
-cpus: 6
-
 mounts:
 - location: "~"
   writable: false
@@ -20,4 +18,3 @@ mounts:
 containerd:
   system: false
   user: false
-
