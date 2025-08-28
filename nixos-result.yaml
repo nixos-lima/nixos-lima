@@ -1,0 +1,26 @@
+# Use this configuration to start a VM with locally-built images. To build
+# images locally, clone the git repo and then run:
+# nix build .#packages.aarch64-linux.img --out-link result-aarch64
+# or
+# nix build .#packages.aarch64-linux.img --out-link result-x86_64
+# to build the image.
+images:
+  - location: "./result-aarch64/nixos.qcow2"
+    arch: "aarch64"
+  - location: "./result-x86_64/nixos.qcow2"
+    arch: "x86_64"
+
+mounts:
+- location: "~"
+  writable: false
+  9p:
+    # Try choosing "mmap" or "none" if you see a stability issue with the default "fscache".
+    cache: "mmap"
+- location: "/tmp/lima"
+  writable: true
+  9p:
+    cache: "mmap"
+
+containerd:
+  system: false
+  user: false
