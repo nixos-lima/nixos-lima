@@ -111,12 +111,12 @@ jobs:
           QEMU_SYSTEM_AARCH64: ${{ env.HOST_ARCH == 'aarch64' && 'qemu-system-aarch64 -machine virt -cpu max' || 'qemu-system-aarch64' }}
         run: |
           set -eux
-          limactl start --name=nixos --arch ${{ matrix.guest-arch }} --name=${{ env.GUEST_HOST_NAME }} --network=lima:user-v2 --set '.user.name = "${{ env.GUEST_USER }}"' nixos-result.yaml
+          limactl start --plain --name=nixos --arch ${{ matrix.guest-arch }} --name=${{ env.GUEST_HOST_NAME }} --network=lima:user-v2 --set '.user.name = "${{ env.GUEST_USER }}"' nixos-result.yaml
 
       - name: "Update and Rebuild NixOS"
         run: |
           set -eux
-          limactl shell nixos -- nixos-rebuild boot --flake .#nixos-${{ matrix.guest-arch }} --sudo
+          limactl shell nixos -- nixos-rebuild boot --flake github:nixos-lima/nixos-lima#nixos-${{ matrix.guest-arch }} --sudo
           sleep 0.1
           limactl restart nixos
 
