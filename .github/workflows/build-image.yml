@@ -93,7 +93,7 @@ jobs:
         id: lima-actions-setup
         with:
           version: ${{ env.LIMA_VERSION }}
-          additional_guestagents: ${{ matrix.os == 'ubuntu-24.04' && 'false' || (matrix.os == 'ubuntu-24.04-arm' && 'true') || 'false' }}
+          additional_guestagents: ${{ matrix.os == 'ubuntu-24.04' && matrix.guest-arch == 'aarch64' && 'true' || (matrix.os == 'ubuntu-24.04-arm' && 'true') || 'false' }}
 
       - name: "Set up Lima (macOS)"
         if: ${{ matrix.os == 'macos-15' }}
