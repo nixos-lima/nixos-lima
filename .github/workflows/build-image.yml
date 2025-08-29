@@ -119,3 +119,13 @@ jobs:
           limactl shell nixos -- nixos-rebuild boot --flake .#nixos-${{ matrix.guest-arch }} --sudo
           sleep 0.1
           limactl restart nixos
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: artifacts-os-${{ matrix.os }}-guest-${{ matrix.guest-arch }}-lima-errlog
+          path: |
+            ~/.lima/nixos/*
+            !~/.lima/nixos/basedisk
+            !~/.lima/nixos/diffdisk
