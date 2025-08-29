@@ -26,7 +26,22 @@
             format = "qcow-efi";
           };
         };
-      }) // {
+      }) //
+      ful.eachSystem [ ful.system.x86_64-linux ful.system.aarch64-linux ful.system.aarch64-darwin ] (system:
+               let
+                 pkgs = import nixpkgs { inherit system; };
+               in
+               {
+                 devShells.default = pkgs.mkShell {
+                   packages = with pkgs ; [
+                         qemu
+                         (lima.override {
+                             withAdditionalGuestAgents = true;
+                         })
+                     ];
+                 };
+
+       }) // {
         nixosConfigurations.nixos-aarch64 = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
           specialArgs = attrs;
