@@ -4,12 +4,32 @@
 
 TBD
 
-== Updating NixOS
+== Starting an instance
 
-From the `/etc/nixos` folder in your VM, you can run:
+See the README.
+
+=== Default Hostname
+
+When you start a new instance using a released **nixos-lima** system image, the hostname of the guest will be `nixos`. To change the hostname, set `networking.hostName` in your NixOS configuration.
+
+=== Instance-related Names
+
+There are four related names that refer in various ways to an instance.
+
+. The name of the Lima template file, e.g. `nixos.yaml` the instance was created from. Unless overridden with the `--name` option, `limactl start` will use the base name of the file (e.g. `nixos`) as the Lima instance name.
+. The Lima instance name (i.e. what is displayed in `limactl list`
+. The system hostname set with `networking.hostName` in the NixOS configuration.
+. The name of the host configuration in `flake.nix`, e.g. `nixosConfigurations.nixos-aarch64`.
+
+All four _could_ be the same, but in practice they are often different. It is helpful to be aware of the distinctions between them.
+
+== Updating the NixOS Configuration of an Instance
+
+If you have checkout out a Git repository with a Nix flake into the `/etc/nixos` directory inside your VM, you can run:
 
 [,console]
 ----
+$ cd /etc/nixos
 $ sudo nix flake update
 ----
 
