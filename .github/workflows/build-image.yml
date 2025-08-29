@@ -22,7 +22,7 @@ jobs:
           sudo apt-get install -y qemu-utils
 
       - name: Install Nix
-        uses: cachix/install-nix-action@v30
+        uses: cachix/install-nix-action@v31
         env:
           # Use env variable QEMU_SYSTEM_AARCH64 to override Lima's QEMU configuration on aarch64 host
           SYSTEM_FEATURES: ${{ env.HOST_ARCH == 'aarch64' && 'kvm aarch64-linux' || 'kvm' }}
@@ -76,29 +76,13 @@ jobs:
           mkdir -p result-${{ matrix.guest-arch }}
           mv artifacts/nixos-lima-unstable-${{ matrix.guest-arch }}.qcow2 result-${{ matrix.guest-arch }}/nixos.qcow2
 
-      - name: "Install QEMU"
-        if: ${{ matrix.os == 'ubuntu-24.04' || matrix.os == 'ubuntu-24.04-arm' }}
-        run: |
-          set -eux
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ovmf qemu-system-x86 qemu-system-aarch64 qemu-efi-aarch64 qemu-utils
-          sudo modprobe kvm
-          # `sudo usermod -aG kvm $(whoami)` does not take an effect on GHA
-          if [ "${{ matrix.os }}" == "ubuntu-24.04" ]; then
-            sudo chown $(whoami) /dev/kvm
-          fi
-
-      - name: "Set up Lima (Linux)"
-        if: ${{ matrix.os == 'ubuntu-24.04' || matrix.os == 'ubuntu-24.04-arm' }}
-        uses: lima-vm/lima-actions/setup@v1
-        id: lima-actions-setup
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
         with:
-          version: ${{ env.LIMA_VERSION }}
-          additional_guestagents: ${{ matrix.os == 'ubuntu-24.04' && matrix.guest-arch == 'aarch64' && 'true' || (matrix.os == 'ubuntu-24.04-arm' && 'true') || 'false' }}
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: "Set up Lima (macOS)"
-        if: ${{ matrix.os == 'macos-15' }}
-        run: brew install lima ${{ matrix.guest-arch == 'x86_64' && 'lima-additional-guestagents' || ''}}
+      - name: Start Nix devShell
+        run: nix develop
 
       - name: "Cache ~/.cache/lima"
         uses: actions/cache@v4
