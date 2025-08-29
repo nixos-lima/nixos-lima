@@ -61,7 +61,6 @@ jobs:
       - name: Enable core dumps
         run: |
           ulimit -c unlimited
-          sudo sysctl -w kernel.core_pattern=core.%e.%p.%t
 
       - name: Checkout
         uses: actions/checkout@v4
