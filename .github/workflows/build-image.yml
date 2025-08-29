@@ -51,11 +51,11 @@ jobs:
       matrix:
         os: [ubuntu-24.04, macos-15]
         guest-arch: ['aarch64', 'x86_64']
-        exclude:
-          - os: 'ubuntu-24.04'      # Dumps core with Lima > 1.0.7
-            guest-arch: 'aarch64'
-          - os: 'macos-15'          # Does not support VZ or (hw accelerated) QEMU
-            guest-arch: 'aarch64'
+ #       exclude:
+ #         - os: 'ubuntu-24.04'      # Dumps core with Lima > 1.0.7
+ #           guest-arch: 'aarch64'
+ #         - os: 'macos-15'          # Does not support VZ or (hw accelerated) QEMU
+ #           guest-arch: 'aarch64'
       fail-fast: false
     env:
       HOST_ARCH: ${{ matrix.os == 'ubuntu-24.04' && 'x86_64' || matrix.os == 'ubuntu-24.04-arm' && 'aarch64' || matrix.os == 'macos-15' && 'aarch64' || 'unknown' }}
