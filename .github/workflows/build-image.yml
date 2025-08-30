@@ -51,17 +51,14 @@ jobs:
       matrix:
         os: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
         guest-arch: ['aarch64', 'x86_64']
-        exclude:
-          - os: 'ubuntu-24.04-arm'  # Not working for some reason
-            guest-arch: 'aarch64'
-          - os: 'macos-15'          # Does not support VZ or (hw accelerated) QEMU
-            guest-arch: 'aarch64'
       fail-fast: false
     env:
       HOST_ARCH: ${{ matrix.os == 'ubuntu-24.04' && 'x86_64' || matrix.os == 'ubuntu-24.04-arm' && 'aarch64' || matrix.os == 'macos-15' && 'aarch64' || 'unknown' }}
       LIMA_VERSION: "v1.2.1"
       GUEST_HOST_NAME: "nixos"
       GUEST_USER: "lima"
+      LIMA_VM_TYPE: ${{ matrix.os == 'macos-15' && matrix.guest-arch == 'aarch64' && '--vm-type qemu' || '' }}
+      QEMU_SYSTEM_AARCH64: ${{ matrix.os == 'ubuntu-24.04-arm' && 'qemu-system-aarch64 -machine virt -cpu max' || matrix.os == 'macos-15' && 'qemu-system-aarch64 -machine virt -cpu max' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -98,7 +95,7 @@ jobs:
           QEMU_SYSTEM_AARCH64: ${{ env.HOST_ARCH == 'aarch64' && 'qemu-system-aarch64 -machine virt -cpu max' || 'qemu-system-aarch64' }}
         run: |
           set -eux
-          limactl start --arch ${{ matrix.guest-arch }} --name=${{ env.GUEST_HOST_NAME }} --network=lima:user-v2 --set '.user.name = "${{ env.GUEST_USER }}"' nixos-result.yaml
+          limactl start ${{ env.LIMA_VM_TYPE }} --arch ${{ matrix.guest-arch }} --name=${{ env.GUEST_HOST_NAME }} --network=lima:user-v2 --set '.user.name = "${{ env.GUEST_USER }}"' nixos-result.yaml
 
       - name: "Update and Rebuild NixOS"
         shell: 'nix develop -c bash -e {0}'
