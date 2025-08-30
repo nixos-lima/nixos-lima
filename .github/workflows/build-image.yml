@@ -113,5 +113,6 @@ jobs:
           name: artifacts-os-${{ matrix.os }}-guest-${{ matrix.guest-arch }}-lima-errlog
           path: |
             ~/.lima/nixos/*
+            !~/.lima/nixos/*.sock
             !~/.lima/nixos/basedisk
             !~/.lima/nixos/diffdisk
