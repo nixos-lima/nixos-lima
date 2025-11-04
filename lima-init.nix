@@ -35,8 +35,11 @@ let
     # Create authorized_keys
     LIMA_CIDATA_SSHDIR="$LIMA_CIDATA_HOMEDIR"/.ssh
     mkdir -p -m 700 "$LIMA_CIDATA_SSHDIR"
-    awk '/ssh-authorized-keys/ {flag=1; next} /^ *$/ {flag=0} flag {sub(/^ +- /, ""); gsub("\"", ""); print $0}' \
-    "${LIMA_CIDATA_MNT}"/user-data >"$LIMA_CIDATA_SSHDIR"/authorized_keys
+    awk '
+    match($0, /^([[:space:]]*)ssh-authorized-keys:/, m) { ident="^" m[1] "[[:space:]]+-[[:space:]]+"; flag=1; next }
+    flag && $0 !~ ident { flag=0; next }
+    flag && $0 ~ ident { sub(ident, ""); gsub("\"", ""); print $0 }
+    ' "${LIMA_CIDATA_MNT}"/user-data >"$LIMA_CIDATA_SSHDIR"/authorized_keys
     LIMA_CIDATA_GID=$(id -g "$LIMA_CIDATA_USER")
     chown -R "$LIMA_CIDATA_UID:$LIMA_CIDATA_GID" "$LIMA_CIDATA_SSHDIR"
     chmod 600 "$LIMA_CIDATA_SSHDIR"/authorized_keys
