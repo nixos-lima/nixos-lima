@@ -29,7 +29,7 @@ limactl start --yes https://raw.githubusercontent.com/nixos-lima/nixos-lima/mast
 
 ## Using the nixos-lima Module in Your Own Configuration
 
-In your `flake.nx`, include `nixos-lima` as a flake input:
+In your `flake.nix`, include `nixos-lima` as a flake input:
 
 ```
   inputs = {
