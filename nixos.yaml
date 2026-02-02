@@ -1,4 +1,4 @@
-# Template using latest released nixos-lima images 
+# Template using latest released nixos-lima images
 images:
   - location: "https://github.com/nixos-lima/nixos-lima/releases/download/v0.0.3/nixos-lima-v0.0.3-aarch64.qcow2"
     arch: "aarch64"
@@ -8,15 +8,15 @@ images:
     digest: "sha512:d7e6a9c9519d94e006af40f689b98c235624bcc5c32f13ad4fe6c6ae411db4a1d6f5415135cd06665fc6eccd4c857d64512c28ec76cd04bfdfbd791408c57eb6"
 
 mounts:
-- location: "~"
-  writable: false
-  9p:
-    # Try choosing "mmap" or "none" if you see a stability issue with the default "fscache".
-    cache: "mmap"
-- location: "/tmp/lima"
-  writable: true
-  9p:
-    cache: "mmap"
+  - location: "~"
+    writable: true
+    9p:
+      # Try choosing "mmap" or "none" if you see a stability issue with the default "fscache".
+      cache: "mmap"
+  - location: "/tmp/lima"
+    writable: true
+    9p:
+      cache: "mmap"
 
 containerd:
   system: false
