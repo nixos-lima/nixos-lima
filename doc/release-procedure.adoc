@@ -1,6 +1,6 @@
 = Publishing images from GitHub Actions to a GitHub Release
 
-This can be further automated, but this is the procedure used for the v0.0.2 release.
+This can be further automated, but this is the procedure used for the v0.0.4 release.
 
 . Prepare for release
 +
@@ -10,7 +10,7 @@ This can be further automated, but this is the procedure used for the v0.0.2 rel
 +
 [source]
 ----
-export VERSION=v0.0.2
+export VERSION=v0.0.4
 git tag --sign $VERSION -m "Release $VERSION"
 git push --tags
 ----
@@ -53,6 +53,6 @@ gh api repos/nixos-lima/nixos-lima/releases/tags/$VERSION --jq '.assets[] | {nam
 +
 . Update the Lima YAML template in nixos-lima/nixos-lima-config-sample
 
-Use the Release URLs from the "Get Release URLs" and the SHA-512s to update `nixos.yaml` in `nixos-lima/nixos-lima-config-sample`
+Use the Release URLs from "Get Release URLs" and the SHA-512s to update `nixos.yaml` in `nixos-lima/nixos-lima-config-sample`
 
 
