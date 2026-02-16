@@ -1,0 +1,12 @@
+= nixos-lima Changelog
+
+== [0.0.4] - 2026-02-16
+
+* Update to nixos-25.11
+* Use LIMA_CIDATA_HOME properly -- fix for https://github.com/nixos-lima/nixos-lima/pull/40[Issue #40]
+* Fix for parsing `ssh-authorized-keys` from `user-data` -- https://github.com/nixos-lima/nixos-lima/pull/38[PR #38] by https://github.com/growler[@growler]
+* Add Nix devShell with qemu and lima https://github.com/nixos-lima/nixos-lima/pull/30[PR #30]
+* Many updates to README.adoc
+* Many updates to GitHub Actions
+
+
