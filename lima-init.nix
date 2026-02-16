@@ -22,8 +22,7 @@ let
     export PATH=${pkgs.lib.makeBinPath [ pkgs.shadow pkgs.gawk pkgs.mount ]}:$PATH
 
     # Create user
-    LIMA_CIDATA_HOMEDIR="/home/$LIMA_CIDATA_USER.linux"
-    id -u "$LIMA_CIDATA_USER" >/dev/null 2>&1 || useradd --home-dir "$LIMA_CIDATA_HOMEDIR" --create-home --uid "$LIMA_CIDATA_UID" "$LIMA_CIDATA_USER"
+    id -u "$LIMA_CIDATA_USER" >/dev/null 2>&1 || useradd --home-dir "$LIMA_CIDATA_HOME" --create-home --uid "$LIMA_CIDATA_UID" "$LIMA_CIDATA_USER"
 
     # Add user to sudoers
     usermod -a -G wheel $LIMA_CIDATA_USER
@@ -33,7 +32,7 @@ let
     ln -fs /run/current-system/sw/bin/bash /bin/bash
 
     # Create authorized_keys
-    LIMA_CIDATA_SSHDIR="$LIMA_CIDATA_HOMEDIR"/.ssh
+    LIMA_CIDATA_SSHDIR="$LIMA_CIDATA_HOME"/.ssh
     mkdir -p -m 700 "$LIMA_CIDATA_SSHDIR"
     awk '
     match($0, /^([[:space:]]*)ssh-authorized-keys:/, m) { ident="^" m[1] "[[:space:]]+-[[:space:]]+"; flag=1; next }
