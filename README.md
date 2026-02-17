@@ -1,6 +1,6 @@
 # Run NixOS on a Lima VM
 
-Run **NixOS** guest VMs using [Lima](https://lima-vm.io). **nixos-lima** is a **Nix** flake that generates Lima-compatible system images and provides a NixOS module for Lima boot-time and runtime support. The NixOS module runs in a Lima guest VM and configures the machine at boot-time using Lima configuration _userdata_ and runs the `lima-guestagent` daemon as a `systemd` service.
+Run **NixOS** guest VMs on a **macOS** or **Linux** host using [Lima](https://lima-vm.io). **nixos-lima** is a **Nix** flake that generates Lima-compatible system images and provides a NixOS module for Lima boot-time and runtime support. The NixOS module runs in a Lima guest VM and configures the machine at boot-time using Lima configuration _userdata_ and runs the `lima-guestagent` daemon as a `systemd` service.
 
 By using the released system image and using the provided NixOS module, you can create your own custom configuration.
 
@@ -17,7 +17,7 @@ If you have comments or suggestions for the design or implementation, please ope
 
 ## Quickstart
 
-To quickly start a **NixOS** guest using **Lima**, we provide the [nixos.yaml](https://github.com/nixos-lima/nixos-lima/blob/master/nixos.yaml) template. You don't need **Nix** installed -- only **Lima**! 
+To quickly start a **NixOS** guest using **Lima** you don't need **Nix** installed on your host OS. Use the [nixos.yaml](https://github.com/nixos-lima/nixos-lima/blob/master/nixos.yaml) template:
 
 1. Install Lima (using Homebrew, Nix or [another mechanism](https://lima-vm.io/docs/installation/))
 2. Create and start a new NixOS guest with `limactl`:
