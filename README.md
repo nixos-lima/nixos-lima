@@ -27,6 +27,15 @@ limactl start --yes https://raw.githubusercontent.com/nixos-lima/nixos-lima/mast
     
 3. See [NixOS Lima VM Config Sample](https://github.com/nixos-lima/nixos-lima-config-sample) for an example of how to maintain the NixOS system configuration (and optionally Home Manager) in your NixOS guest VM.
 
+### Quickstart with Lima 2.0+ Template URLs
+
+If you have Lima 2.0.0 or later installed you can use the (experimental) GitHub Template URLs feature to use a more compact `start` command:
+
+```bash
+limactl start --yes github:nixos-lima
+```
+
+
 ## Using the nixos-lima Module in Your Own Configuration
 
 In your `flake.nix`, include `nixos-lima` as a flake input:
