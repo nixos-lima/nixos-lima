@@ -18,6 +18,8 @@ mounts:
   9p:
     cache: "mmap"
 
+memory: 8GiB
+
 containerd:
   system: false
   user: false
