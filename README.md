@@ -52,6 +52,19 @@ In your system configuration, include:
 
 For a complete, working example see: [nixos-lima/nixos-lima-config-sample](https://github.com/nixos-lima/nixos-lima-config-sample)
 
+## Recommended Lima Configuration
+
+You'll typically want to give the guest VM at least 8 GiB of memory. The `nixos.yaml` template contains the following:
+
+```yaml
+memory: 8GiB
+```
+You can also specify guest memory allocation on the command line. For example to allocate 16 GiB use:
+
+```bash
+limactl start --memory 16 github:nixos-lima
+```
+
 ## Using nixos-rebuild To Customize and Update Your Guest Instance
 
 There are at least three ways of managing the NixOS configuration of your image:
