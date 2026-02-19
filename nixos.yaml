@@ -20,6 +20,15 @@ mounts:
 
 memory: 8GiB
 
+portForwards:
+  # Tell Lima's port-forwarding to ignore port 68 to prevent interception of host DHCP packets
+  # Apparently this is an issue with NixOS that does not occur on other Linux distros
+  # See: https://github.com/nixos-lima/nixos-lima/issues/50
+  - proto: udp
+    guestPort: 68
+    guestIP: 0.0.0.0
+    ignore: true
+
 containerd:
   system: false
   user: false
