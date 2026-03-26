@@ -108,8 +108,15 @@ EOF
 
     #echo "$LIMA_CIDATA_SLIRP_GATEWAY host.lima.internal" >> /etc/hosts
 
-    cp "${LIMA_CIDATA_MNT}"/meta-data /run/lima-ssh-ready
-    cp "${LIMA_CIDATA_MNT}"/meta-data /run/lima-boot-done
+    # write instance ID to boot-done and ssh-ready signal files for Lima (>= 2.1.0)
+    if [ -n "$LIMA_CIDATA_IID" ]; then
+        echo "$LIMA_CIDATA_IID" > /run/lima-ssh-ready
+        echo "$LIMA_CIDATA_IID" > /run/lima-boot-done
+    else
+        cp "${LIMA_CIDATA_MNT}"/meta-data /run/lima-ssh-ready
+        cp "${LIMA_CIDATA_MNT}"/meta-data /run/lima-boot-done
+    fi
+
     exit 0
     '';
 in {
