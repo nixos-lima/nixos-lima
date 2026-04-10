@@ -1,55 +1,98 @@
-{ config, modulesPath, pkgs, lib, ... }:
 {
-    imports = [
-        (modulesPath + "/profiles/qemu-guest.nix")
-        ./lima-init.nix
-    ];
+  config,
+  modulesPath,
+  pkgs,
+  lib,
+  ...
+}:
+{
+  imports = [
+    (modulesPath + "/profiles/qemu-guest.nix")
+    ./lima-init.nix
+  ];
 
-    nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  # Get image under 2GB for Github release.
+  documentation.enable = false;
 
-    # Give users in the `wheel` group additional rights when connecting to the Nix daemon
-    # This simplifies remote deployment to the instance's nix store.
-    nix.settings.trusted-users = [ "@wheel" ];
+  # Give users in the `wheel` group additional rights when connecting to the Nix daemon
+  # This simplifies remote deployment to the instance's nix store.
+  nix = {
+    channel.enable = false;
 
-    # Read Lima configuration at boot time and run the Lima guest agent
-    services.lima.enable = true;
-
-    # ssh
-    services.openssh.enable = true;
-
-    security = {
-        sudo.wheelNeedsPassword = false;
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [
+        "flakes"
+        "nix-command"
+      ];
+      min-free = "8G";
+      max-free = "32G";
+      trusted-users = [ "@wheel" ];
     };
+  };
 
-    # system mounts
-    boot = {
-        kernelParams = [ "console=tty0" ];
-        loader.grub = {
-            device = "nodev";
-            efiSupport = true;
-            efiInstallAsRemovable = true;
-        };
+  # Read Lima configuration at boot time and run the Lima guest agent
+  services.lima.enable = true;
+
+  # ssh
+  services.openssh.enable = true;
+
+  security = {
+    sudo = {
+      enable = true;
+      wheelNeedsPassword = false;
     };
-    fileSystems."/boot" = {
-        device = lib.mkForce "/dev/vda1";  # /dev/disk/by-label/ESP
-        fsType = "vfat";
+  };
+
+  # system mounts
+  boot = {
+    kernelParams = [ "console=tty0" ];
+    loader = {
+      efi.canTouchEfiVariables = true;
+      systemd-boot.enable = true;
     };
-    fileSystems."/" = {
-        device = "/dev/disk/by-label/nixos";
-        autoResize = true;
-        fsType = "ext4";
-        options = [ "noatime" "nodiratime" "discard" ];
+  };
+  fileSystems = {
+    "/boot" = {
+      device = lib.mkForce "/dev/vda1";
+      fsType = "vfat";
+      options = [
+        "discard"
+        "noatime"
+        "umask=0077"
+      ];
     };
+    "/" = {
+      device = lib.mkForce "/dev/vda2";
+      fsType = "ext4";
+      options = [
+        "discard"
+        "noatime"
+        "nodiratime"
+      ];
+    };
+  };
 
-    # misc
-    boot.kernelPackages = pkgs.linuxPackages_latest;
+  # pkgs
+  environment.systemPackages = with pkgs; [
+    vim
+    git
+    htop
+    direnv
+    nix-output-monitor
+  ];
 
-    # pkgs
-    environment.systemPackages = with pkgs; [
-        vim
-        git
-    ];
+  programs = {
+    direnv = {
+      enable = true;
+      silent = true;
+    };
+  };
 
-    system.stateVersion = "25.11";
+  system.stateVersion = "25.11";
+
+  virtualisation.rosetta = {
+    enable = pkgs.stdenv.hostPlatform.isAarch64;
+    mountTag = "vz-rosetta";
+  };
 }
-
