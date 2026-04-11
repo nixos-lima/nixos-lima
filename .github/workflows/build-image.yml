@@ -32,6 +32,9 @@ jobs:
             system-features = ${{ env.SYSTEM_FEATURES }}
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Nix Format Check
+        run: nix fmt -- --fail-on-change
+
       - name: Build ${{ env.HOST_ARCH }} Image
         run: |
           nix build .#packages.${{ env.HOST_ARCH }}-linux.img --out-link result-${{ env.HOST_ARCH }}
