@@ -7,12 +7,20 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { self, nixpkgs, flake-utils, nixos-generators, ... }@attrs: 
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+      nixos-generators,
+      ...
+    }@attrs:
     # Create system-specific outputs for lima systems
     let
       ful = flake-utils.lib;
     in
-    ful.eachSystem [ ful.system.x86_64-linux ful.system.aarch64-linux ] (system:
+    ful.eachSystem [ ful.system.x86_64-linux ful.system.aarch64-linux ] (
+      system:
       let
         pkgs = import nixpkgs { inherit system; };
       in
@@ -26,40 +34,43 @@
             format = "qcow-efi";
           };
         };
-      }) //
-      ful.eachSystem [ ful.system.x86_64-linux ful.system.aarch64-linux ful.system.aarch64-darwin ] (system:
-               let
-                 pkgs = import nixpkgs { inherit system; };
-               in
-               {
-                 devShells.default = pkgs.mkShell {
-                   packages = with pkgs ; [
-                         qemu
-                         (lima.override {
-                             withAdditionalGuestAgents = true;
-                         })
-                     ];
-                 };
-                 formatter = pkgs.nixfmt-tree;
-       }) // {
-        nixosConfigurations.nixos-aarch64 = nixpkgs.lib.nixosSystem {
-          system = "aarch64-linux";
-          specialArgs = attrs;
-          modules = [
-            ./lima.nix
+      }
+    )
+    // ful.eachSystem [ ful.system.x86_64-linux ful.system.aarch64-linux ful.system.aarch64-darwin ] (
+      system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+      in
+      {
+        devShells.default = pkgs.mkShell {
+          packages = with pkgs; [
+            qemu
+            (lima.override {
+              withAdditionalGuestAgents = true;
+            })
           ];
         };
-        nixosConfigurations.nixos-x86_64 = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = attrs;
-          modules = [
-            ./lima.nix
-          ];
-        };
-
-        nixosModules.lima = {
-          imports = [ ./lima-init.nix ];
-        };
+        formatter = pkgs.nixfmt-tree;
+      }
+    )
+    // {
+      nixosConfigurations.nixos-aarch64 = nixpkgs.lib.nixosSystem {
+        system = "aarch64-linux";
+        specialArgs = attrs;
+        modules = [
+          ./lima.nix
+        ];
       };
-}
+      nixosConfigurations.nixos-x86_64 = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = attrs;
+        modules = [
+          ./lima.nix
+        ];
+      };
 
+      nixosModules.lima = {
+        imports = [ ./lima-init.nix ];
+      };
+    };
+}
