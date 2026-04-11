@@ -14,7 +14,7 @@ jobs:
       HOST_ARCH: ${{ matrix.os == 'ubuntu-24.04' && 'x86_64' || (matrix.os == 'ubuntu-24.04-arm' && 'aarch64') || 'unknown' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install qemu-utils
         run: |
@@ -39,7 +39,7 @@ jobs:
           qemu-img convert -O qcow2 -c result-${{ env.HOST_ARCH }}/nixos.qcow2 nixos-lima-unstable-${{ env.HOST_ARCH }}.qcow2
 
       - name: Upload ${{ env.HOST_ARCH }} image as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nixos-lima-unstable-${{ env.HOST_ARCH }}
           path: nixos-lima-unstable-${{ env.HOST_ARCH }}.qcow2
@@ -61,9 +61,9 @@ jobs:
       QEMU_SYSTEM_AARCH64: ${{ matrix.os == 'ubuntu-24.04-arm' && 'qemu-system-aarch64 -machine virt -cpu max' || matrix.os == 'macos-15' && 'qemu-system-aarch64 -machine virt -cpu max' || '' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Download ${{ matrix.guest-arch }} image artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: nixos-lima-unstable-${{ matrix.guest-arch }}
           path: artifacts/
@@ -83,7 +83,7 @@ jobs:
         run: nix build --no-link .#devShells.$(nix eval --impure --raw --expr 'builtins.currentSystem').default
 
       - name: "Cache ~/.cache/lima"
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/lima
           key: os-${{ matrix.os }}-NixOS-Lima-${{ steps.lima-actions-setup.outputs.version }}-guest-${{ matrix.guest-arch }}
@@ -106,7 +106,7 @@ jobs:
           limactl restart nixos
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: artifacts-os-${{ matrix.os }}-guest-${{ matrix.guest-arch }}-lima-errlog
