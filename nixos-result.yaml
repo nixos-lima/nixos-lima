@@ -2,7 +2,7 @@
 # images locally, clone the git repo and then run:
 # nix build .#packages.aarch64-linux.img --out-link result-aarch64
 # or
-# nix build .#packages.aarch64-linux.img --out-link result-x86_64
+# nix build .#packages.x86_64-linux.img --out-link result-x86_64
 # to build the image.
 images:
   - location: "./result-aarch64/nixos.qcow2"
