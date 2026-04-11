@@ -40,7 +40,7 @@
                          })
                      ];
                  };
-
+                 formatter = pkgs.nixfmt-tree;
        }) // {
         nixosConfigurations.nixos-aarch64 = nixpkgs.lib.nixosSystem {
           system = "aarch64-linux";
