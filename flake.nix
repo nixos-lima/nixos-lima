@@ -7,6 +7,12 @@
       url = "github:nix-community/nixos-generators";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    /*
+      determinate = {
+        url = "github:DeterminateSystems/determinate";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
+    */
   };
   outputs =
     {
@@ -15,6 +21,7 @@
       nixpkgs-unstable,
       flake-utils,
       nixos-generators,
+      # determinate,
       ...
     }@attrs:
     # Create system-specific outputs for lima systems
@@ -31,6 +38,7 @@
           img = nixos-generators.nixosGenerate {
             inherit pkgs;
             modules = [
+              # determinate.nixosModules.default
               ./lima.nix
             ];
             format = "qcow-efi";
@@ -63,6 +71,7 @@
         system = "aarch64-linux";
         specialArgs = attrs;
         modules = [
+          # determinate.nixosModules.default
           ./lima.nix
         ];
       };
@@ -70,6 +79,7 @@
         system = "x86_64-linux";
         specialArgs = attrs;
         modules = [
+          # determinate.nixosModules.default
           ./lima.nix
         ];
       };
