@@ -19,12 +19,20 @@
     ful.eachSystem [ ful.system.x86_64-linux ful.system.aarch64-linux ] (system: {
       packages = {
         img =
-          (nixpkgs.lib.nixosSystem {
+          let
+            base = nixpkgs.lib.nixosSystem {
+              modules = [
+                { nixpkgs.hostPlatform = system; }
+                ./lima.nix
+              ];
+            };
+          in
+          (base.extendModules {
             modules = [
-              { nixpkgs.hostPlatform = system; }
-              ./lima.nix
+              "${nixpkgs}/nixos/modules/virtualisation/disk-image.nix"
+              { image.baseName = "nixos"; }
             ];
-          }).config.system.build.images."qemu-efi";
+          }).config.system.build.image;
       };
     })
     // ful.eachSystem [ ful.system.x86_64-linux ful.system.aarch64-linux ful.system.aarch64-darwin ] (
