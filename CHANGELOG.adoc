@@ -1,5 +1,25 @@
 = nixos-lima Changelog
 
+== [0.0.5] - 2026-04-12
+
+=== Released Images
+
+* lima-init: support Lima 2.1+ with Instance ID -- https://github.com/nixos-lima/nixos-lima/pull/52[PR #52] by https://github.com/rinx[@rinx]
+* Updated to `nixpkgs/nixos-25.11` - rev `54170c54449ea4d6725efd30d719c5e505f1c10e`
+
+=== Repository, documentation, and tests
+
+* Support for starting a NixOS VM with `limactl start github:nixos-lima` -- see https://github.com/nixos-lima/nixos-lima?tab=readme-ov-file#quickstart[Quickstart]
+* `nixos.yaml`, `nixos-result.yaml`: configure `memory: 8GiB` -- fix for https://github.com/nixos-lima/nixos-lima/issues/48[Issue #48]
+* `nixos.yaml`, `nixos-result.yaml`: port forward ignore rule for DHCP client port  -- https://github.com/nixos-lima/nixos-lima/pull/51[PR #51] fixes https://github.com/nixos-lima/nixos-lima/issues/48[Issue #48]
+* Use `nixpkgs-unstable` for lima 2.0.3 in devShell, GitHub Actions -- https://github.com/nixos-lima/nixos-lima/pull/58[PR #58]
+* Use a Nix formatter for the `.nix` files -- https://github.com/nixos-lima/nixos-lima/pull/57[PR #57]
+* Updated and improved GitHub Actions
+
+=== Contributors
+
+https://github.com/rinx[@rinx], https://github.com/justin-qu[@justin-qu]
+
 == [0.0.4] - 2026-02-16
 
 * Update to nixos-25.11
