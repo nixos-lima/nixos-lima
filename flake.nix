@@ -3,10 +3,6 @@
     nixpkgs.url = "nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
   outputs =
     {
@@ -14,30 +10,23 @@
       nixpkgs,
       nixpkgs-unstable,
       flake-utils,
-      nixos-generators,
       ...
     }@attrs:
     # Create system-specific outputs for lima systems
     let
       ful = flake-utils.lib;
     in
-    ful.eachSystem [ ful.system.x86_64-linux ful.system.aarch64-linux ] (
-      system:
-      let
-        pkgs = import nixpkgs { inherit system; };
-      in
-      {
-        packages = {
-          img = nixos-generators.nixosGenerate {
-            inherit pkgs;
+    ful.eachSystem [ ful.system.x86_64-linux ful.system.aarch64-linux ] (system: {
+      packages = {
+        img =
+          (nixpkgs.lib.nixosSystem {
             modules = [
+              { nixpkgs.hostPlatform = system; }
               ./lima.nix
             ];
-            format = "qcow-efi";
-          };
-        };
-      }
-    )
+          }).config.system.build.images."qemu-efi";
+      };
+    })
     // ful.eachSystem [ ful.system.x86_64-linux ful.system.aarch64-linux ful.system.aarch64-darwin ] (
       system:
       let
@@ -60,16 +49,16 @@
     )
     // {
       nixosConfigurations.nixos-aarch64 = nixpkgs.lib.nixosSystem {
-        system = "aarch64-linux";
         specialArgs = attrs;
         modules = [
+          { nixpkgs.hostPlatform = "aarch64-linux"; }
           ./lima.nix
         ];
       };
       nixosConfigurations.nixos-x86_64 = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
         specialArgs = attrs;
         modules = [
+          { nixpkgs.hostPlatform = "x86_64-linux"; }
           ./lima.nix
         ];
       };
