@@ -1,0 +1,95 @@
+name: test-release.yml
+on: [workflow_dispatch, push]
+
+jobs:
+  test-image:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-24.04, macos-15]
+        guest-arch: ['aarch64', 'x86_64']
+      fail-fast: false
+    env:
+      NIXOS_LIMA_TAG: "v0.0.3"
+      HOST_ARCH: ${{ matrix.os == 'ubuntu-24.04' && 'x86_64' || matrix.os == 'ubuntu-24.04-arm' && 'aarch64' || matrix.os == 'macos-15' && 'aarch64' || 'unknown' }}
+      LIMA_VERSION: "v1.2.1"
+      GUEST_HOST_NAME: "nixos"
+      GUEST_USER: "lima"
+    steps:
+      - name: Enable Linux Core Dumps
+        if: ${{ matrix.os == 'ubuntu-24.04' }}
+        run: |
+          ulimit -c unlimited
+          sudo sysctl -w kernel.core_pattern=core.%e.%p.%t
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: create directory for system image
+        run: |
+          mkdir -p result-${{ matrix.guest-arch }}
+
+      - name: Download release asset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download ${{ env.NIXOS_LIMA_TAG }} \
+            --repo nixos-lima/nixos-lima \
+            --pattern nixos-lima-${{ env.NIXOS_LIMA_TAG }}-${{ matrix.guest-arch }}.qcow2 \
+            --dir result-${{ matrix.guest-arch }}
+
+      - name: move and rename to match template
+        run: |
+          mkdir -p result-${{ matrix.guest-arch }}
+          mv result-${{ matrix.guest-arch }}/nixos-lima-${{ env.NIXOS_LIMA_TAG }}-${{ matrix.guest-arch }}.qcow2 result-${{ matrix.guest-arch }}/nixos.qcow2
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      # pre-build the shell separately to avoid skewing the run time of the next
+      # step and have clear point of failure should the shell fail to build
+      - name: Pre-build devShell
+        run: nix build --no-link .#devShells.$(nix eval --impure --raw --expr 'builtins.currentSystem').default
+
+      - name: "Cache ~/.cache/lima"
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/lima
+          key: os-${{ matrix.os }}-NixOS-Lima-${{ steps.lima-actions-setup.outputs.version }}-guest-${{ matrix.guest-arch }}
+
+      - name: "Start an instance of NixOS"
+        shell: 'nix develop -c bash -e {0}'
+        env:
+          # Use env variable QEMU_SYSTEM_AARCH64 to override Lima's QEMU configuration on aarch64 host
+          QEMU_SYSTEM_AARCH64: ${{ env.HOST_ARCH == 'aarch64' && 'qemu-system-aarch64 -machine virt -cpu max' || 'qemu-system-aarch64' }}
+        run: |
+          set -eux
+          limactl start --arch ${{ matrix.guest-arch }} --name=${{ env.GUEST_HOST_NAME }} --network=lima:user-v2 --set '.user.name = "${{ env.GUEST_USER }}"' nixos-result.yaml
+
+      - name: "Update and Rebuild NixOS"
+        shell: 'nix develop -c bash -e {0}'
+        run: |
+          set -eux
+          limactl shell nixos -- nixos-rebuild boot --flake .#nixos-${{ matrix.guest-arch }} --sudo
+          sleep 0.1
+          limactl restart nixos
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: artifacts-os-${{ matrix.os }}-guest-${{ matrix.guest-arch }}-lima-errlog
+          path: |
+            ~/.lima/nixos/*
+            !~/.lima/nixos/basedisk
+            !~/.lima/nixos/diffdisk
+
+      - name: Upload core dump
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qemu-core-dump
+          path: core.*
+
