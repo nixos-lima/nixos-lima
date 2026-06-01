@@ -1,6 +1,6 @@
 = Publishing images from GitHub Actions to a GitHub Release
 
-This can be further automated, but this is the procedure used for the v0.1 release.
+This can be further automated, but this is the procedure used for the v0.2 release.
 
 . Prepare for release
 +
@@ -10,7 +10,7 @@ This can be further automated, but this is the procedure used for the v0.1 relea
 +
 [source]
 ----
-export VERSION=v0.1
+export VERSION=v0.2
 git tag --sign $VERSION -m "Release $VERSION"
 git push --tags
 ----
