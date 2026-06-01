@@ -24,10 +24,6 @@ To quickly start a **NixOS** guest using **Lima** you don't need **Nix** install
    ```bash
    limactl start github:nixos-lima
     ```
-   or, if you have `lima` 1.x use:
-    ```bash
-    limactl start https://raw.githubusercontent.com/nixos-lima/nixos-lima/master/nixos.yaml
-    ```
 3. See [NixOS Lima VM Config Sample](https://github.com/nixos-lima/nixos-lima-config-sample) for an example of how to maintain your custom NixOS system configuration (and optionally Home Manager) in your NixOS guest VM.
 
 If you are curious about how the `github:nixos-lima` URL works, see [GitHub Template URLs](https://lima-vm.io/docs/templates/github/).
