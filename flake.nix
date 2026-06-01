@@ -1,7 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-25.11";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "nixpkgs/nixos-26.05";
     flake-utils.url = "github:numtide/flake-utils";
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
@@ -12,7 +11,6 @@
     {
       self,
       nixpkgs,
-      nixpkgs-unstable,
       flake-utils,
       nixos-generators,
       ...
@@ -42,14 +40,12 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
-        # Use nixpkgs-unstable to get newer Lima in devShell
-        pkgs-unstable = import nixpkgs-unstable { inherit system; };
       in
       {
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.qemu
-            (pkgs-unstable.lima.override {
+            (pkgs.lima.override {
               withAdditionalGuestAgents = true;
               qemu = pkgs.qemu;
             })
