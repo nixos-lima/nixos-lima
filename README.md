@@ -39,16 +39,17 @@ If you already have a running VM, use `nixos-rebuild` to apply changes — no ne
 
 ### Apply config changes to a running VM
 
-From inside the VM, with the repo directory accessible:
+From inside the VM with the repo directory accessible, use the default dev shell:
 
 ```bash
-sudo nixos-rebuild switch --flake /path/to/nixos-lima#nixos-aarch64
+nix develop --command apply-nix-config             # standard NixOS config
+nix develop --command apply-nix-config --determinate  # Determinate Nix config
 ```
 
-Or driven from the host:
+Or directly:
 
 ```bash
-limactl shell nixos -- sudo nixos-rebuild switch --flake .#nixos-aarch64
+sudo nixos-rebuild switch --flake .#nixos-determinate-aarch64
 ```
 
 Restart the VM after rebuilding to re-run `lima-init` and restore shared mounts:
@@ -62,18 +63,14 @@ limactl restart nixos
 Building requires a Linux host or builder. The running VM itself can build images if the repo is mounted from the host.
 
 ```bash
-# Standard image
-nix build .#packages.aarch64-linux.nixos-image
-
-# With Determinate Nix
-nix build .#packages.aarch64-linux.nixos-determinate-image
-
-# x86_64 variants
-nix build .#packages.x86_64-linux.nixos-image
-nix build .#packages.x86_64-linux.nixos-determinate-image
+nix develop .#build-tools
+build-image aarch64                # standard image
+build-image aarch64 --determinate  # Determinate Nix image
+build-image x86_64                 # x86_64 variants
+build-image x86_64 --determinate
 ```
 
-The image is output to `./result/nixos.qcow2`. To use it, update the `images:` section of `lima.yaml` to point to the local path, then recreate the VM:
+The command prints the sha512 hash of the output image on completion. To use a locally built image, update the `images:` section of `lima.yaml` to point to `./result/nixos.qcow2`, then recreate the VM:
 
 ```bash
 limactl delete nixos

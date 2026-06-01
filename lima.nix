@@ -149,7 +149,7 @@ in
 
     fileSystems."${LIMA_CIDATA_MNT}" = {
       device = "${LIMA_CIDATA_DEV}";
-      fsType = "auto";
+      fsType = "iso9660";
       options = [
         "ro"
         "mode=0700"

@@ -80,5 +80,5 @@
 
   system.activationScripts.removeChannels = "rm -rf /root/.nix-defexpr/channels /nix/var/nix/profiles/per-user/root/channels";
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }

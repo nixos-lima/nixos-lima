@@ -1,9 +1,6 @@
 {
   inputs = {
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/*";
-    # nixpkgs-unstable is used only for lima in the devShell; the stable nixpkgs
-    # version is outdated and approaching end-of-life.
-    nixpkgs-unstable.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1.*";
     determinate = {
       url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -14,7 +11,6 @@
     {
       self,
       nixpkgs,
-      nixpkgs-unstable,
       determinate,
       ...
     }:
@@ -28,7 +24,6 @@
       ];
 
       pkgsFor = system: nixpkgs.legacyPackages.${system};
-      pkgsUnstableFor = system: nixpkgs-unstable.legacyPackages.${system};
 
       makeImage =
         system: nixosSystem:
@@ -70,7 +65,6 @@
         system:
         let
           pkgs = pkgsFor system;
-          pkgsUnstable = pkgsUnstableFor system;
           # Default arch for image builds: match the host's arch, mapped to Linux
           defaultArch = if lib.hasPrefix "aarch64" system then "aarch64" else "x86_64";
         in
@@ -154,7 +148,7 @@
               pkgs.qemu
               # withAdditionalGuestAgents bundles guest agent binaries for both
               # aarch64 and x86_64, needed to serve the correct binary to each VM.
-              (pkgsUnstable.lima.override { withAdditionalGuestAgents = true; })
+              (pkgs.lima.override { withAdditionalGuestAgents = true; })
             ];
           };
         }
