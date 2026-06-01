@@ -51,8 +51,6 @@ sha512sum tmp/*.qcow2
 gh api repos/nixos-lima/nixos-lima/releases/tags/$VERSION --jq '.assets[] | {name, url: .browser_download_url, digest}'
 ----
 +
-. Update the Lima YAML template in nixos-lima/nixos-lima-config-sample
-
-Use the Release URLs from "Get Release URLs" and the SHA-512s to update `nixos.yaml` in `nixos-lima/nixos-lima-config-sample`
+. Update the Lima YAML template in `nixos.yaml` and the one in the `nixos-lima/nixos-lima-config-sample` project using the Release URLs from "Get Release URLs" and the SHA-512s that were output.
 
 
