@@ -200,7 +200,6 @@ in
       bash
       sshfs
       fuse3
-      git
     ];
 
     boot.kernel.sysctl = {

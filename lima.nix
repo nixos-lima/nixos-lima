@@ -59,8 +59,8 @@
 
   # pkgs
   environment.systemPackages = with pkgs; [
-    vim
-    git
+    nextvi # small version of vi
+    gitMinimal # minimal version of git
   ];
 
   system.stateVersion = "25.11";
