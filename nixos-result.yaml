@@ -21,7 +21,7 @@ mounts:
   9p:
     cache: "mmap"
 
-memory: 8GiB
+memory: 9GiB
 
 portForwards:
   # Tell Lima's port-forwarding to ignore port 68 to prevent interception of host DHCP packets
