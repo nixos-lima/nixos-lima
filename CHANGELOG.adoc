@@ -1,5 +1,51 @@
 = nixos-lima Changelog
 
+== [0.2.1] - 2026-06-23
+
+=== Released Images
+
+* Updated `nixpkgs/nixos-26.05` to rev `34268251cf5547d39063f2c5ea9a196246f7f3a6`
+* Add QEMU guest-agent support for Lima 2.1.3 (`--socket-owner` flag) -- see https://github.com/nixos-lima/nixos-lima/pull/101[PR #101] and https://github.com/lima-vm/lima/commit/8a45892378d22f40505c31a38f786a07701b6d50[lima-vm commit 8a45892]
+** Lima 2.1.3 fixes Lima security advisory https://github.com/lima-vm/lima/security/advisories/GHSA-2j9v-p4xj-cjw2[GHSA-2j9v-p4xj-cjw2]
+** nixos-lima images may need to be updated for `lima-guestagent` to start properly.
+* Smaller image and `lima-init` -- see https://github.com/nixos-lima/nixos-lima/pull/97[PR #97]
+** Remove `git` from `environment.systemPackages` in `lima-init.nix`
+** Use `nextvi` and `gitMinimal` in `environment.systemPackages` in `lima.nix`
+* `lima.nix`: explicitly set `users.mutableUsers = true` -- see https://github.com/nixos-lima/nixos-lima/pull/94[PR #94]
+
+=== Repository, documentation, and tests
+
+* GitHub Actions use Ubuntu 26.04 runners (instead of Ubuntu 24.04)
+* Several improvements to GitHub Actions workflow for reliability, debugging, and maintenance.
+
+=== Known Issues
+
+* QEMU on GitHub Actions is still having intermittent failures.
+
+== [0.2] - 2026-06-01
+
+This is the first release of images using NixOS-26.05. It should be considered a beta release because it has only received minimal testing and NixOS 26.05 itself is new.
+
+=== Released Images
+
+* Updated to `nixpkgs/nixos-26.05` - rev `b51242d7d43689db2f3be91bd05d5b24fbb469c40`
+
+=== Known Issues
+
+* We have seen some failures in GitHub Actions. These failures are likely related to the stability of Nixpkgs QEMU (when used in emulation mode on the GitHub runners) but caution is advised. See https://github.com/nixos-lima/nixos-lima/issues/67[Issue #67].
+
+== [0.1] - 2026-06-01
+
+This is the final release of images using NixOS-25.11 .
+
+=== Released Images
+
+* Updated to `nixpkgs/nixos-25.11` - rev `25f538306313eae3927264466c70d7001dcea1df`
+
+=== Repository, documentation, and tests
+
+* Add weekly Dependabot checking for nix flake updates. https://github.com/nixos-lima/nixos-lima/pull/71[PR #71]
+
 == [0.0.5] - 2026-04-12
 
 === Released Images
