@@ -64,6 +64,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Ubuntu apt-get update
+        run: |
+          sudo apt-get update
+
       - name: Download ${{ matrix.guest-arch }} image artifact
         uses: actions/download-artifact@v8
         with:
