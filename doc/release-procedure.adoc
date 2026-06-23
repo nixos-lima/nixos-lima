@@ -6,11 +6,12 @@ This can be further automated, but this is the procedure used for the v0.2 relea
 +
 * Merge changes to master branch, etc.
 * Do a `nix flake update` so image is built with latest version of Nixpkgs
+* Update `CHANGELOG.adoc`
 . Make a tag
 +
 [source]
 ----
-export VERSION=v0.2
+export VERSION=v0.2.1
 git tag --sign $VERSION -m "Release $VERSION"
 git push --tags
 ----
