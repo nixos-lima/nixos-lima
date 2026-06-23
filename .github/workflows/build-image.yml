@@ -84,12 +84,6 @@ jobs:
       - name: Pre-build devShell
         run: nix build --no-link .#devShells.$(nix eval --impure --raw --expr 'builtins.currentSystem').default
 
-      - name: "Cache ~/.cache/lima"
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/lima
-          key: os-${{ matrix.os }}-NixOS-Lima-${{ steps.lima-actions-setup.outputs.version }}-guest-${{ matrix.guest-arch }}
-
       - name: "Start an instance of NixOS"
         shell: 'nix develop -c bash -e {0}'
         run: |
