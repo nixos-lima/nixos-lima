@@ -116,3 +116,9 @@ jobs:
             !~/.lima/nixos/disk
             !~/.lima/nixos/basedisk
             !~/.lima/nixos/diffdisk
+
+  build_all_green:
+    runs-on: ubuntu-26.04
+    needs: [build, test-image]
+    steps:
+      - run: echo "All upstream jobs passed"
