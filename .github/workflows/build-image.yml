@@ -95,6 +95,7 @@ jobs:
         run: |
           set -eux
           limactl start ${{ env.LIMA_VM_TYPE }} --arch ${{ matrix.guest-arch }} --name=${{ env.GUEST_HOST_NAME }} --set '.user.name = "${{ env.GUEST_USER }}"' nixos-result.yaml
+          limactl shell nixos -- systemd-detect-virt
 
       - name: "Update and Rebuild NixOS"
         shell: 'nix develop -c bash -e {0}'
