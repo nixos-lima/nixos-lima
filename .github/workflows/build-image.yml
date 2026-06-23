@@ -94,7 +94,7 @@ jobs:
         shell: 'nix develop -c bash -e {0}'
         run: |
           set -eux
-          limactl start ${{ env.LIMA_VM_TYPE }} --arch ${{ matrix.guest-arch }} --name=${{ env.GUEST_HOST_NAME }} --network=lima:user-v2 --set '.user.name = "${{ env.GUEST_USER }}"' nixos-result.yaml
+          limactl start ${{ env.LIMA_VM_TYPE }} --arch ${{ matrix.guest-arch }} --name=${{ env.GUEST_HOST_NAME }} --set '.user.name = "${{ env.GUEST_USER }}"' nixos-result.yaml
 
       - name: "Update and Rebuild NixOS"
         shell: 'nix develop -c bash -e {0}'
