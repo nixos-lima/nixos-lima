@@ -169,7 +169,13 @@ in
       script = ''
         # We can't just source lima.env because values might have spaces in them
         while read -r line; do export "$line"; done < "${LIMA_CIDATA_MNT}"/lima.env
-        ${LIMA_CIDATA_MNT}/lima-guestagent daemon --vsock-port "$LIMA_CIDATA_VSOCK_PORT"
+        # Build the lima-guestagent command options, setting --socket-owner if Lima v2.1.3 or greater
+        options="--vsock-port $LIMA_CIDATA_VSOCK_PORT"
+        if ${LIMA_CIDATA_MNT}/lima-guestagent daemon --help 2>&1 | grep -q -- '--socket-owner'; then
+            options="$options --socket-owner $LIMA_CIDATA_UID"
+        fi
+        echo Starting lima-guestagent daemon with options: $options
+        ${LIMA_CIDATA_MNT}/lima-guestagent daemon $options
       '';
       serviceConfig = {
         Type = "simple";
