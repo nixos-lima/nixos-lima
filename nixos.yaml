@@ -1,11 +1,11 @@
 # Template using latest released nixos-lima images 
 images:
-  - location: "https://github.com/nixos-lima/nixos-lima/releases/download/v0.2/nixos-lima-v0.2-aarch64.qcow2"
+  - location: "https://github.com/nixos-lima/nixos-lima/releases/download/v0.2.1/nixos-lima-v0.2.1-aarch64.qcow2"
     arch: "aarch64"
-    digest: "sha512:dc297799d93f0fe6cb8fac779b97bb5e2712f0dd640eed53cc57d9c95844751a32d20ce794751fb56c128b35fe8a8a956cd08856b8818e9e6c377380d6f0cc4f"
-  - location: "https://github.com/nixos-lima/nixos-lima/releases/download/v0.2/nixos-lima-v0.2-x86_64.qcow2"
+    digest: "sha512:748c723b69dbdec40a9acaf78cc9070ae784dcb64b0856ab906efdac822d9abcc65565b8f8dfa4cf8b49cc6c12c372072e83bb5ed9247330a7c22675d9e141ce"
+  - location: "https://github.com/nixos-lima/nixos-lima/releases/download/v0.2.1/nixos-lima-v0.2.1-x86_64.qcow2"
     arch: "x86_64"
-    digest: "sha512:d6fcda5100a9485d9203f084a64d8585ad75543957922144e7a2d84d779cff87b642341bb8f49018ec54b82f8f91fc31b74c7432ff2a5247af3e0bcf57ef79ca"
+    digest: "sha512:636c9c24d7aea340c808e72802cd05589d18c1bbeda45242e3c4725cdfdcc497cfdfd4dfecd76e4be7b8de3a688a1046f269c072bce487c0b06a60515262995e"
 
 mounts:
 - location: "~"
