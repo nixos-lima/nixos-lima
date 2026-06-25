@@ -29,7 +29,6 @@ let
           pkgs.lib.makeBinPath [
             pkgs.shadow
             pkgs.gawk
-            pkgs.mount
           ]
         }:$PATH
 
