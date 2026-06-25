@@ -95,15 +95,15 @@ jobs:
         run: |
           set -eux
           limactl start ${{ env.LIMA_VM_TYPE }} --arch ${{ matrix.guest-arch }} --name=${{ env.GUEST_HOST_NAME }} --set '.user.name = "${{ env.GUEST_USER }}"' nixos-result.yaml
-          limactl shell nixos -- systemd-detect-virt
+          limactl shell ${{ env.GUEST_HOST_NAME }} -- systemd-detect-virt
 
       - name: "Update and Rebuild NixOS"
         shell: 'nix develop -c bash -e {0}'
         run: |
           set -eux
-          limactl shell nixos -- nixos-rebuild boot --flake .#nixos-${{ matrix.guest-arch }} --sudo
+          limactl shell ${{ env.GUEST_HOST_NAME }} -- nixos-rebuild boot --flake .#nixos-${{ matrix.guest-arch }} --sudo
           sleep 0.1
-          limactl restart nixos
+          limactl restart ${{ env.GUEST_HOST_NAME }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
@@ -111,11 +111,11 @@ jobs:
         with:
           name: artifacts-os-${{ matrix.os }}-guest-${{ matrix.guest-arch }}-lima-errlog
           path: |
-            ~/.lima/nixos/*
-            !~/.lima/nixos/*.sock
-            !~/.lima/nixos/disk
-            !~/.lima/nixos/basedisk
-            !~/.lima/nixos/diffdisk
+            ~/.lima/${{ env.GUEST_HOST_NAME }}/*
+            !~/.lima/${{ env.GUEST_HOST_NAME }}/*.sock
+            !~/.lima/${{ env.GUEST_HOST_NAME }}/disk
+            !~/.lima/${{ env.GUEST_HOST_NAME }}/basedisk
+            !~/.lima/${{ env.GUEST_HOST_NAME }}/diffdisk
 
   build_all_green:
     runs-on: ubuntu-26.04
