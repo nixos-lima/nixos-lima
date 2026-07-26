@@ -82,6 +82,13 @@ let
     EOF
         echo "#LIMA-END" >> /etc/fstab
 
+        # Mkdir /run/host-services. Same as the following script.
+        # https://github.com/lima-vm/lima/blob/f7b1c4f68b90299afc89ffeb47756e5fca590b91/pkg/cidata/cidata.TEMPLATE.d/boot.Linux/26-host-services.sh
+        echo "Mkdir /run/host-services"
+        mkdir -p /run/host-services
+        chmod 700 /run/host-services
+        chown -R $LIMA_CIDATA_USER /run/host-services
+
         # Run system provisioning scripts
         echo "Running system provisioning scripts"
         if [ -d "${LIMA_CIDATA_MNT}"/provision.system ]; then
