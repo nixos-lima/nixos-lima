@@ -15,6 +15,12 @@ images:
 mounts:
   - location: '~'
     writable: true
+  - location: '~/.ssh'
+    mountPoint: '/home/lima.guest/.ssh'
+    writeable: false
+  - location: '~/.sb'
+    mountPoint: '/home/lima.guest/.sb'
+    writeable: false
 
 vmOpts:
   vz:
