@@ -17,10 +17,10 @@ mounts:
     writable: true
   - location: '~/.ssh'
     mountPoint: '/home/lima.guest/.ssh'
-    writeable: false
+    writable: false
   - location: '~/.sb'
     mountPoint: '/home/lima.guest/.sb'
-    writeable: false
+    writable: false
 
 vmOpts:
   vz:
