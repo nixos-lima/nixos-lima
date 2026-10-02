@@ -147,7 +147,8 @@ in
 
       after = [ "network-pre.target" ];
 
-      restartIfChanged = true;
+      # a restart propagates to lima-guestagent, see there
+      restartIfChanged = false;
       unitConfig.X-StopOnRemoval = false;
 
       serviceConfig = {
@@ -165,6 +166,8 @@ in
         "lima-init.service"
       ];
       requires = [ "lima-init.service" ];
+      # a restart breaks every port forward until the instance restarts (lima-vm/lima#5557)
+      restartIfChanged = false;
       script = ''
         # We can't just source lima.env because values might have spaces in them
         while read -r line; do export "$line"; done < "${LIMA_CIDATA_MNT}"/lima.env
