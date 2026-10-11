@@ -1,5 +1,14 @@
 = nixos-lima Changelog
 
+== [0.2.2] - 2026-10-11
+
+=== Compatibility fixes
+
+* Fix host-services compatibility issue with Lima 2.2.0+. (https://github.com/nixos-lima/nixos-lima/issues/121[Issue 121] fixed by
+https://github.com/nixos-lima/nixos-lima/pull/122[PR 122], thanks  https://github.com/a2not[a2not])
+* Updated `nixpkgs/nixos-26.05` to rev `7c8764b7c7b09b34f632464276218ef9090eaa11`
+* Miscellaneous minor build and test improvements.
+
 == [0.2.1] - 2026-06-23
 
 === Released Images
