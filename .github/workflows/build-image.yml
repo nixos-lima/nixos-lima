@@ -51,6 +51,7 @@ jobs:
     needs: build
     strategy:
       matrix:
+        dev-shell-name: [ "default", "unstable"]
         os: [ubuntu-26.04, ubuntu-26.04-arm, macos-15]
         guest-arch: ['aarch64', 'x86_64']
       fail-fast: false
@@ -88,7 +89,7 @@ jobs:
       # pre-build the shell separately to avoid skewing the run time of the next
       # step and have clear point of failure should the shell fail to build
       - name: Pre-build devShell
-        run: nix build --no-link .#devShells.$(nix eval --impure --raw --expr 'builtins.currentSystem').default
+        run: nix build --no-link .#devShells.$(nix eval --impure --raw --expr 'builtins.currentSystem').${{ matrix.dev-shell-name }}
 
       - name: "Start an instance of NixOS"
         shell: 'nix develop -c bash -e {0}'

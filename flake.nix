@@ -1,6 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-26.05";
+    nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -10,6 +11,7 @@
     {
       self,
       nixpkgs,
+      nixpkgs-unstable,
       nixos-generators,
       ...
     }@attrs:
@@ -36,6 +38,7 @@
         system:
         let
           pkgs = import nixpkgs { inherit system; };
+          pkgs-unstable = import nixpkgs-unstable { inherit system; };
         in
         {
           default = pkgs.mkShell {
@@ -44,6 +47,15 @@
               (pkgs.lima.override {
                 withAdditionalGuestAgents = true;
                 qemu = pkgs.qemu;
+              })
+            ];
+          };
+          unstable = pkgs.mkShell {
+            packages = [
+              pkgs-unstable.qemu
+              (pkgs-unstable.lima.override {
+                withAdditionalGuestAgents = true;
+                qemu = pkgs-unstable.qemu;
               })
             ];
           };
