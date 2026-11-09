@@ -52,16 +52,16 @@ jobs:
     strategy:
       matrix:
         dev-shell-name: [ "default", "unstable"]
-        os: [ubuntu-26.04, ubuntu-26.04-arm, macos-15]
+        os: [ubuntu-26.04, ubuntu-26.04-arm, macos-15, macos-26, xcode-27]
         guest-arch: ['aarch64', 'x86_64']
       fail-fast: false
     env:
-      HOST_ARCH: ${{ matrix.os == 'ubuntu-26.04' && 'x86_64' || matrix.os == 'ubuntu-26.04-arm' && 'aarch64' || matrix.os == 'macos-15' && 'aarch64' || 'unknown' }}
+      HOST_ARCH: ${{ matrix.os == 'ubuntu-26.04' && 'x86_64' || matrix.os == 'ubuntu-26.04-arm' && 'aarch64' || matrix.os == 'macos-15' && 'aarch64' || matrix.os == 'macos-26' && 'aarch64' || matrix.os == 'xcode-27' && 'aarch64' || 'unknown' }}
       GUEST_HOST_NAME: "nixos"
       GUEST_USER: "lima"
       # For macos-15, force `--vm-type qemu` since GitHub runners don't support VZ and Lima 2.0.x defaults to VZ even for x86_64 guests
-      LIMA_VM_TYPE: ${{ matrix.os == 'macos-15' && '--vm-type qemu' || '' }}
-      QEMU_SYSTEM_AARCH64: ${{ matrix.os == 'ubuntu-26.04-arm' && 'qemu-system-aarch64 -machine virt -cpu max' || matrix.os == 'macos-15' && 'qemu-system-aarch64 -machine virt -cpu max' || '' }}
+      LIMA_VM_TYPE: ${{ matrix.os == 'macos-15' && '--vm-type qemu' || matrix.os == 'macos-26' && '--vm-type qemu' || matrix.os == 'xcode-27' && '--vm-type qemu' ||'' }}
+      QEMU_SYSTEM_AARCH64: ${{ matrix.os == 'ubuntu-26.04-arm' && 'qemu-system-aarch64 -machine virt -cpu max' || matrix.os == 'macos-15' && 'qemu-system-aarch64 -machine virt -cpu max' || matrix.os == 'macos-26' && 'qemu-system-aarch64 -machine virt -cpu max' || matrix.os == 'xcode-27' && 'qemu-system-aarch64 -machine virt -cpu max' || '' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
