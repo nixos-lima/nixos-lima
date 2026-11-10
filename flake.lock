@@ -54,16 +54,16 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1793977579,
-        "narHash": "sha256-WrSODdZFVIs/Hh2NzC0bY+ROByi0bATg8WfePX8dPj8=",
-        "owner": "nixos",
+        "lastModified": 1794040300,
+        "narHash": "sha256-sTRSSPXKbdNOlA3SaN5vfKnsZ/bRf/N4/ekUryXmHhc=",
+        "owner": "r-ryantm",
         "repo": "nixpkgs",
-        "rev": "4fe25e12eb9f4c744966dd3de5a05246cf098601",
+        "rev": "85671f49242707b16d5529401274d5197741267b",
         "type": "github"
       },
       "original": {
-        "owner": "nixos",
-        "ref": "nixpkgs-unstable",
+        "owner": "r-ryantm",
+        "ref": "auto-update/lima-full",
         "repo": "nixpkgs",
         "type": "github"
       }
